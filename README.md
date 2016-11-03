@@ -167,6 +167,8 @@ class MyComponent extends Vue { // the class extends of Vue just to get intellit
     // ...
   }
 
+  // Watch accept a string who whould be the property name
+  // and an options object as second parameter
   @Watch('someVar')
   someVarWatcher(newVal, oldVal) {
     // ...
