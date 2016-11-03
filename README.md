@@ -10,7 +10,7 @@ further are incompatible with Vue 2.x, although in this module this support is e
 
 ## Features
 
-* **@Component:** Create a Vue componente in the three ways of create `Vue.extend`, `Vue.component` and root Vue instance (eg. new Vue({ ... })).
+* **@Component:** Create a Vue componente in the three ways: `Vue.extend`, `Vue.component` and `root` Vue instance (eg. new Vue({ ... })).
   * **@Prop:** Create a component property.
   * **@On:** Create a component `on` event listener.
   * **@Once:** Create a component `once` event listener.
@@ -24,13 +24,12 @@ further are incompatible with Vue 2.x, although in this module this support is e
 * **@Filter:** Create a Vue filter, local or global.
 * **@Mixin:** Create a mixin object.
 
-All Vue Router hooks are also supported as classes methods, except the `activate` hook because it has the same name as the Vue components hook in the version 1.x.x.
-
 > See all the examples below.
 
 ## Usage
 
 ```
+// class only
 @Component() 
   or
 @Component(options)
@@ -61,11 +60,16 @@ class MyComponent extends Vue {
 ```
 The code above it is the same that:
 
+>NOTE: All Vue Router hooks are also supported as classes methods, except the `activate` hook because it has the same name as the Vue components hook in the version 1.x.x.
+
 ```javascript
 new Vue({
   el: '#app',
   data: {
     someData: ''
+  },
+  ready() {
+    this.someData = 'Hello!, MyComponent.';
   },
   methods: {
     someMethod: function (){
@@ -142,15 +146,18 @@ class RootComp {
 ## Props, Events and Watchers
 
 ```
+// properties or methods only
 @Prop()
   or
 @Prop(options)
 ```
 ```
+// methods only
 @On(eventName)
 @Once(eventName)
 ```
 ```
+// methods only
 @Watch(propertyName)
   or
 @Watch(propertyName, options)
