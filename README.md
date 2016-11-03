@@ -443,6 +443,18 @@ Vue.extend({
 ```javascript
 import { Component, Mixin } from 'vue-ts-decorate';
 
+// Global Mixins are availables with the the
+// `global` property set to true, otherwise 
+// (can be omited) mixin is local.
+@Mixin({ global: true })
+class GlobalMixin {
+  someGlobalProp: string = 'some value';
+
+  someGlobalMethod() {
+    // ...
+  }
+}
+
 // Mixins are classes with the same behavior
 // of components but are not converted in one.
 @Mixin()

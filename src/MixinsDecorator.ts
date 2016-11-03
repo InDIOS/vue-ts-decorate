@@ -1,3 +1,4 @@
+import * as Vue from 'vue';
 import { assign } from '../utils/tools';
 import {
 	Construct, getAllProperties, routerFunctions, parseProps,
@@ -8,6 +9,8 @@ import {
 export function Mixin(options?: any) {
 	if (!options) options = {};
 	delete options.tagName;
+	let isGlob = options.global;
+	delete options.global;
 	return function (target: any) {
 		clearObject(target);
 		let proto = target.prototype;
@@ -53,6 +56,10 @@ export function Mixin(options?: any) {
 
 		mixin = cleanOptions(mixin);
 
+		if (isGlob) {
+			Vue.mixin(mixin);
+			return;
+		}
 		proto.$mixin$.push(mixin);
 		assign(target, mixin);
 		return target;
