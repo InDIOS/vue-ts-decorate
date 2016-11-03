@@ -30,7 +30,14 @@ All Vue Router hooks are also supported as classes methods, except the `activate
 
 ## Usage
 
+```
+@Component() 
+  or
+@Component(options)
+```
+
 ### Basic Component declaration
+
 
 ```javascript
 import * as Vue from 'vue';
@@ -133,6 +140,21 @@ class RootComp {
 ```
 
 ## Props, Events and Watchers
+
+```
+@Prop()
+  or
+@Prop(options)
+```
+```
+@On(eventName)
+@Once(eventName)
+```
+```
+@Watch(propertyName)
+  or
+@Watch(propertyName, options)
+```
 
 ```javascript
 import * as Vue from 'vue';
@@ -294,7 +316,7 @@ import { Component, Directive, VueDirective } from 'vue-ts-decorate';
 // just the `update` method is required.
 // NOTE: To get intellitSense and fix possible errors inside the methods,
 // the directive class must be extends of `VueDirective` abstract class
-@Directive({ /* directive options */ })
+@Directive({ /* directive options */ } /* or non parameter*/)
 class MyGlobalDirective extends VueDirective {
 
   bind() {
