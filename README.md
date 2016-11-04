@@ -504,7 +504,9 @@ in javascript
 ```javascript
 Vue.mixin({
   data: function() {
-    someGlobalProp: 'some value';
+    return { 
+      someGlobalProp: 'some value' 
+    };
   },
   methods: {
     someGlobalMethod: function() {
