@@ -56,11 +56,11 @@ describe('Basic Component', () => {
 		describe('and `$options.methods`', () => { 
 			it('should have one property', () => {
 				expect(Object.keys((<any>TestComponent).$options.methods).length).toBe(1);
-			})
+			});
 
 			it('and should be a function', () => {
 				expect(typeof (<any>TestComponent).$options.methods.testMethod).toBe('function');
-			})
+			});
 		});
 	});
 

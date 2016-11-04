@@ -29,7 +29,7 @@ export function getValue(object: Object, propertys: string) {
 	if (typeof propertys === 'string') {
 		keys = propertys.split('.');
 	} else {
-		throw new Error('Parameter propertys must be a string.')
+		throw new Error('Parameter propertys must be a string.');
 	}
 	let curr = keys.shift();
 	if (!!object[curr]) {
@@ -120,7 +120,7 @@ export function parseOptions(instance: any, options: any, keys?: string[]) {
 	}
 	for (let i = 0; i < keys.length; i++) {
 		let key = keys[i];
-		if (key.charAt(0) != '$' && key.charAt(0) != '_') {
+		if (key.charAt(0) !== '$' && key.charAt(0) !== '_') {
 			let prop_desc = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(instance), key);
 			if (prop_desc && prop_desc.get) {
 				let computed_obj: any = {};
@@ -139,13 +139,13 @@ export function parseOptions(instance: any, options: any, keys?: string[]) {
 					}
 					if (vueVersion === 2) {
 						if (~vue2InstanceFunctions.indexOf(key)) {
-							options[key] = instance[key]
+							options[key] = instance[key];
 						} else {
 							options.methods[key] = instance[key];
 						}
 					} else {
 						if (~vue1InstanceFunctions.indexOf(key)) {
-							options[key] = instance[key]
+							options[key] = instance[key];
 						} else {
 							options.methods[key] = instance[key];
 						}
@@ -193,7 +193,7 @@ export function parseProps(instance: any, options: any) {
 	for (let key in options.props) {
 		let default_val = options.data[key];
 		if (default_val === null || default_val === undefined)
-			default_val = options.methods[key]
+			default_val = options.methods[key];
 		if (default_val !== null && default_val !== undefined) {
 			if (!options.props[key])
 				options.props[key] = {};

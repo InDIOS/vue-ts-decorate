@@ -13,7 +13,7 @@ export function Getter(getter: string | Function) {
 		}
 		//remove it from the instance so it is not added to data
 		delete target[key];
-	}
+	};
 }
 
 export function Action(action: Function) {
@@ -23,5 +23,5 @@ export function Action(action: Function) {
 		target.$$actions[key] = action;
 		//remove it from the instance so it is not added to data
 		delete target[key];
-	}
+	};
 }

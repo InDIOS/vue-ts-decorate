@@ -22,7 +22,7 @@ export function Directive(params?: Options) {
 	return function (target: any) {
 		let instance = Construct(target);
 
-		if (options.params && !options.paramWatchers) options.paramWatchers = {}
+		if (options.params && !options.paramWatchers) options.paramWatchers = {};
 
 		for (let key in instance) {
 			let isFunc = typeof instance[key] === 'function';
@@ -49,5 +49,5 @@ export function Directive(params?: Options) {
 			}
 			return Vue.directive(attr);
 		}
-	}
+	};
 }

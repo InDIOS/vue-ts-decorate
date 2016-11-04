@@ -15,5 +15,5 @@ export function Prop(options?: vuejs.PropOption) {
 		target.$$props[key] = options;
 		//remove it from the instance so it is not added to data
 		delete target[key];
-	}
+	};
 }

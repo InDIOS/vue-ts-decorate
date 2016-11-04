@@ -7,7 +7,7 @@ export function On(eventName: string) {
 		//make sure the function does not end up in methods
 		if (!target.$$methodsToRemove) target.$$methodsToRemove = [];
 		target.$$methodsToRemove.push(key);
-	}
+	};
 }
 
 //@Once annotation, same as @On but will remove the handler when fired
@@ -17,10 +17,10 @@ export function Once(eventName: string) {
 		if (!target.$$events) target.$$events = {};
 		target.$$events[eventName] = function (...args: any[]) {
 			target[key].call(this, ...args);
-			this.$off(eventName, target.$$events[eventName])
+			this.$off(eventName, target.$$events[eventName]);
 		};
 		//make sure the function does not end up in methods
 		if (!target.$$methodsToRemove) target.$$methodsToRemove = [];
 		target.$$methodsToRemove.push(key);
-	}
+	};
 }

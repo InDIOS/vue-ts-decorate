@@ -1,9 +1,8 @@
 import * as Vue from 'vue';
 import { assign } from '../utils/tools';
 import {
-	Construct, getAllProperties, routerFunctions, parseProps,
-	vue1InstanceFunctions, vue2InstanceFunctions, initOptions,
-	vueVersion, cleanOptions, parseOptions
+	Construct, getAllProperties, parseProps,
+	initOptions, cleanOptions, parseOptions
 } from '../utils/utilities';
 
 export function Mixin(options?: any) {
@@ -46,12 +45,12 @@ export function Mixin(options?: any) {
 
 		for (let key in target.prototype) {
 			if (!~keep.indexOf(key)) {
-				delete target.prototype[key]
+				delete target.prototype[key];
 			}
 		}
 
 		for (let key in instance.$$methodsToRemove) {
-			delete mixin.methods[instance.$$methodsToRemove[key]]
+			delete mixin.methods[instance.$$methodsToRemove[key]];
 		}
 
 		mixin = cleanOptions(mixin);
@@ -63,7 +62,7 @@ export function Mixin(options?: any) {
 		proto.$mixin$.push(mixin);
 		assign(target, mixin);
 		return target;
-	}
+	};
 }
 
 function clearObject(target: any) {

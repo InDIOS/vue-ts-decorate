@@ -46,5 +46,5 @@ export function Component(options?: Options) {
 			let VueComponent = Vue.extend(options);
 			return el ? new VueComponent().$mount(el) : VueComponent;
 		}
-	}
+	};
 }
