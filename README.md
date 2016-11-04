@@ -37,7 +37,6 @@ further are incompatible with Vue 2.x, although in this module this support is e
 
 ### Basic Component declaration
 
-
 ```javascript
 import * as Vue from 'vue';
 import { Component } from 'vue-ts-decorate';
@@ -54,7 +53,7 @@ class MyComponent extends Vue {
 
   // No annotated methods ara added to `methods` property.
   someMethod() {
-    // your code here
+    // ...
   }
 }
 ```
@@ -72,8 +71,8 @@ new Vue({
     this.someData = 'Hello!, MyComponent.';
   },
   methods: {
-    someMethod: function (){
-      // your code here
+    someMethod: function() {
+      // ...
     }
   }
 });
@@ -169,7 +168,6 @@ import { Component, Prop, Watch, On, Once } from 'vue-ts-decorate';
 
 @Component()
 class MyComponent extends Vue { // the class extends of Vue just to get intellitSense inside the methods
-
   someVar: string = 'Hello!';
 
   @Prop({
@@ -235,7 +233,7 @@ Vue.extend({
       default: function() {
         return { 
           some_default: 'value' 
-        }
+        };
       }
     },
     someObjProp: {
@@ -274,7 +272,6 @@ import { Component, Getter, Action } from 'vue-ts-decorate';
 
 @Component()
 class MyComponent {
-
   // Getter accept a string with the properties of the state
   // in the format: 'foo.bar.baz'.
   // NOTE: Omit the `state` in the string because it is added internaly.
@@ -325,7 +322,6 @@ import { Component, Directive, VueDirective } from 'vue-ts-decorate';
 // the directive class must be extends of `VueDirective` abstract class
 @Directive({ /* directive options */ } /* or non parameter*/)
 class MyGlobalDirective extends VueDirective {
-
   bind() {
     // ...
   }
@@ -337,7 +333,6 @@ class MyGlobalDirective extends VueDirective {
   unbind() {
     // ...
   }
-
 }
 
 // With the `local` boolean property
@@ -346,11 +341,9 @@ class MyGlobalDirective extends VueDirective {
 // are converted to functions, otherwise will be an object.
 @Directive({ local: true, /* directive options */ })
 class MyLocalDirective extends VueDirective {
-
   update() {
     // ...
   }
-
 }
 
 // and in the component
@@ -361,9 +354,7 @@ class MyLocalDirective extends VueDirective {
   directives: { MyLocalDirective }
 })
 class MyComponent {
-
   // ...
-
 }
 ```
 
@@ -513,12 +504,11 @@ Vue.mixin({
       // ...
     }
   }
-
 });
 
 var ChildMixin = {
   data: {
-    someProp:'some value'
+    someProp:'some value',
     someChildProp: 'some value'
   },
   methods: {
@@ -533,7 +523,7 @@ var ChildMixin = {
 
 var BrotherMixin = {
   data: {
-    someProp:'some value'
+    someProp:'some value',
     someBrotherProp: 'some value'
   },
   methods: {
