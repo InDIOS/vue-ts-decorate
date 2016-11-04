@@ -8,6 +8,14 @@
 	"suppressTaskName": true,
 	"tasks": [
 		{
+			"taskName": "compile",
+			"args": ["run", "compile"]
+		},
+		{
+			"taskName": "test:watch",
+			"args": ["run", "test:watch"]
+		},
+		{
 			"taskName": "test",
 			"args": ["run", "test"]
 		}

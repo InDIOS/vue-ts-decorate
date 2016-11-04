@@ -1,10 +1,13 @@
 "use strict";
+var Vue = require('vue');
 var tools_1 = require('../utils/tools');
 var utilities_1 = require('../utils/utilities');
 function Mixin(options) {
     if (!options)
         options = {};
     delete options.tagName;
+    var isGlob = options.global;
+    delete options.global;
     return function (target) {
         clearObject(target);
         var proto = target.prototype;
@@ -43,6 +46,10 @@ function Mixin(options) {
             delete mixin.methods[instance.$$methodsToRemove[key]];
         }
         mixin = utilities_1.cleanOptions(mixin);
+        if (isGlob) {
+            Vue.mixin(mixin);
+            return;
+        }
         proto.$mixin$.push(mixin);
         tools_1.assign(target, mixin);
         return target;

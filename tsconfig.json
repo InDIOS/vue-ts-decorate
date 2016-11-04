@@ -9,7 +9,10 @@
 		"removeComments": true,
 		"moduleResolution": "node",
 		"experimentalDecorators": true,
-		"emitDecoratorMetadata": true
+		"emitDecoratorMetadata": true,
+		"typeRoots": [
+			"node_modules/@types"
+		]
 	},
 	"exclude": [
 		"node_modules",

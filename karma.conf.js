@@ -15,7 +15,7 @@ module.exports = function (karma) {
 
     // preprocess matching files before serving them to the browser
 		preprocessors: {
-			'libs/test/**/*.js': [ 'browserify' ]
+			'libs/test/**/*.spect.js': [ 'browserify' ]
     },
 
     // test results reporter to use
@@ -23,10 +23,13 @@ module.exports = function (karma) {
     reporters: ['spec'],
 
     // level of logging
-    logLevel: karma.LOG_DEBUG,
+    logLevel: karma.LOG_INFO,
 
     // enable/disable watching file and executing tests whenever any file changes
-		autoWatch: true,
+		autoWatch: false,
+
+		// Continuous Integration mode		
+		singleRun: true,
 
     // start these browsers
     browsers: ['Firefox'],
