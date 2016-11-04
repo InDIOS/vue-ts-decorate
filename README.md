@@ -502,6 +502,18 @@ class MyComponent extends ChildMixin implements BrotherMixin {
 in javascript
 
 ```javascript
+Vue.mixin({
+  data: function() {
+    someGlobalProp: 'some value';
+  },
+  methods: {
+    someGlobalMethod: function() {
+      // ...
+    }
+  }
+
+});
+
 var ChildMixin = {
   data: {
     someProp:'some value'
