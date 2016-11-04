@@ -2,7 +2,7 @@
 
 A set of [TypeScript](http://www.typescriptlang.org/) decorators for make the work with [Vue.js](http://vuejs.org) easiest.
 
-> **Note:** This project take some ideas and examples of the projects [vue-ts](https://github.com/weichx/vue-ts) and [vue-typescript](https://github.com/itsFrank/vue-typescript).
+> **Note:** This project take some ideas and examples of the projects [av-ts](https://github.com/HerringtonDarkholme/av-ts), [vue-ts](https://github.com/weichx/vue-ts) and [vue-typescript](https://github.com/itsFrank/vue-typescript).
 
 ## The Why?
 The projects mentioned in the note above are very good but, for some reasons not include some decorators that i believe are important too,
