@@ -1,15 +1,8 @@
 import Vue = require('vue');
 import { Construct, unCapitalize, vueVersion } from '../utils/utilities';
 
-export function Filter(target: any, key?: string, descriptor?: PropertyDescriptor) {
-	if (key && descriptor && vueVersion === 1) {
-		//create the temp filters holder if non existane
-		if (!target.$$filters) target.$$filters = {};
-		target.$$filters[key] = target[key];
-		//make sure the function does not end up in methods
-		if (!target.$$methodsToRemove) target.$$methodsToRemove = [];
-		target.$$methodsToRemove.push(key);
-	} else if (target && !key && !descriptor) {
+export function Filter(local) {
+	return function (target: any) {
 		let newInstance = Construct(target);
 
 		let options: any = {};
@@ -25,11 +18,15 @@ export function Filter(target: any, key?: string, descriptor?: PropertyDescripto
 		}
 
 		let filter: string = unCapitalize(target.name);
-		if (options.filter) {
-			Vue.filter(filter, options.filter);
+		if (local && vueVersion === 1) {
+			return { [filter]: options.filter ? options.filter : options };
 		} else {
-			Vue.filter(filter, options);
+			if (options.filter) {
+				Vue.filter(filter, options.filter);
+			} else {
+				Vue.filter(filter, options);
+			}
+			return Vue.filter(filter);
 		}
-		return Vue.filter(filter);
-	}
+	};
 }

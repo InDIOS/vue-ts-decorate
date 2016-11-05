@@ -350,7 +350,7 @@ class MyLocalDirective extends VueDirective {
 @Component({ 
   /* other options */,
   // the name of the directives 
-  // is converte in kebab-case as well
+  // is converte in kebab-case internaly as well
   directives: { MyLocalDirective }
 })
 class MyComponent {
@@ -393,20 +393,40 @@ import { Component, Filter } from 'vue-ts-decorate';
 
 // This is a global filter.
 // The filter class just need a method called `filter`
-@Filter
+@Filter()
 class MyGlobalFilter {
   filter(value: any, ...params: any[]) {
     // ...
   }
 }
 
-// and for local filters
-@Component()
+// This is a local filter.
+@Filter(true)
+class MyLocalFilter {
+  filter(value: any, ...params: any[]) {
+    // ...
+  }
+}
+
+// and in the component
+@Component({ 
+  /* other options */,
+  // the name of the filter 
+  // is uncapitalized internaly as well
+  filters: { MyLocalFilter }
+})
 class MyComponent {
   // ...
+}
 
-  @Filter
-  myLocalFilter(value: any, ...params: any[]) {
+// This is a tow way binding filter.
+@Filter()
+class MyTowWayFilter {
+  read(value: any) {
+    // ...
+  }
+
+  write(value: any, ...params: any[]) {
     // ...
   }
 }
@@ -415,17 +435,27 @@ class MyComponent {
 and in javascript
 
 ```javascript
-Vue.filter('MyGlobalFilter', function(value, params) {
+Vue.filter('myGlobalFilter', function(value, params) {
   // ...
 });
 
 Vue.extend({
-  // options go here
+	name: 'MyComponent',
   filters: {
     myLocalFilter: function(value, params){
       // ...
     }
   }
+  // and other options...
+});
+
+Vue.filter('myTowWayFilter', {
+  read: function(value) {
+		// ...
+	},
+  write: function(value, params) {
+		// ...
+	}
 });
 ```
 

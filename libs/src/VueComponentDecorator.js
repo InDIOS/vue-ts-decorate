@@ -17,6 +17,9 @@ function Component(options) {
         if (instance.$mixin$ && instance.$mixin$.length > 0) {
             options.mixins = options.mixins.concat(instance.$mixin$);
         }
+        for (var key in instance.$$methodsToRemove) {
+            delete options.methods[instance.$$methodsToRemove[key]];
+        }
         options = utilities_1.cleanOptions(options);
         var data = options.data;
         options.data = function () { return tools_1.assign({}, data); };
