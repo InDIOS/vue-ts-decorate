@@ -13,7 +13,9 @@ export function Prop(options?: vuejs.PropOption) {
 		}
 
 		target.$$props[key] = options;
-		//remove it from the instance so it is not added to data
+		//remove it from the instance so it is not added to data or methods
+		if (!target.$$methodsToRemove) target.$$methodsToRemove = [];
+		target.$$methodsToRemove.push(key);
 		delete target[key];
 	};
 }

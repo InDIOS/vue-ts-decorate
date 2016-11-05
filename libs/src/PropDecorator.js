@@ -13,6 +13,9 @@ function Prop(options) {
             options['default'] = target[key];
         }
         target.$$props[key] = options;
+        if (!target.$$methodsToRemove)
+            target.$$methodsToRemove = [];
+        target.$$methodsToRemove.push(key);
         delete target[key];
     };
 }
