@@ -5,7 +5,7 @@ function Watch(name, options) {
             target.$$watch = {};
         var watched = name;
         var handler = target[key];
-        if (typeof handler != 'string') {
+        if (typeof handler !== 'string') {
             if (!target.$$methodsToRemove)
                 target.$$methodsToRemove = [];
             target.$$methodsToRemove.push(key);

@@ -136,8 +136,7 @@ export function parseOptions(instance: any, options: any, keys?: string[]) {
 				if (key !== 'constructor') {
 					if (~routerFunctions.indexOf(key)) {
 						options.route[key] = instance[key];
-					}
-					if (vueVersion === 2) {
+					} else if (vueVersion === 2) {
 						if (~vue2InstanceFunctions.indexOf(key)) {
 							options[key] = instance[key];
 						} else {

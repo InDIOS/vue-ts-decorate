@@ -125,7 +125,7 @@ function parseOptions(instance, options, keys) {
     }
     for (var i = 0; i < keys.length; i++) {
         var key = keys[i];
-        if (key.charAt(0) != '$' && key.charAt(0) != '_') {
+        if (key.charAt(0) !== '$' && key.charAt(0) !== '_') {
             var prop_desc = Object.getOwnPropertyDescriptor(Object.getPrototypeOf(instance), key);
             if (prop_desc && prop_desc.get) {
                 var computed_obj = {};
@@ -143,7 +143,7 @@ function parseOptions(instance, options, keys) {
                     if (~exports.routerFunctions.indexOf(key)) {
                         options.route[key] = instance[key];
                     }
-                    if (exports.vueVersion === 2) {
+                    else if (exports.vueVersion === 2) {
                         if (~exports.vue2InstanceFunctions.indexOf(key)) {
                             options[key] = instance[key];
                         }
