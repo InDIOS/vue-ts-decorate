@@ -32,6 +32,10 @@ export function Component(options?: Options) {
 			options.mixins = options.mixins.concat(instance.$mixin$);
 		}		
 
+		for (let key in instance.$$methodsToRemove) {
+			delete options.methods[instance.$$methodsToRemove[key]];
+		}
+
 		options = cleanOptions(options);
 		let data = options.data;
 		options.data = () => assign({}, data);
