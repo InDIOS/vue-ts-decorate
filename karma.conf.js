@@ -15,7 +15,7 @@ module.exports = function (karma) {
 
     // preprocess matching files before serving them to the browser
 		preprocessors: {
-			'libs/test/**/*.spect.js': [ 'browserify' ]
+			'libs/test/**/*.js': [ 'browserify' ]
     },
 
     // test results reporter to use
