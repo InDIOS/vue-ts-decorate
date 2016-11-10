@@ -17,7 +17,9 @@
     "test": "npm run compile && karma start"
   },
   "dependencies": {
-    "@types/vue": "^1.0.28"
+    "absurd-css": "^0.1.0",
+    "hash-sum": "^1.0.2",
+    "himalaya": "^0.2.1"
   },
   "author": "InDIOS",
   "license": "MIT",

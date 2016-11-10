@@ -1,45 +1,26 @@
 import Vue = require('vue');
 import { assign } from './tools';
 
-export function Construct(target, ...args) {
-	let constructor: any = () => new target(...args);
-	constructor.prototype = target.prototype;
-	return new constructor();
-}
+export const routerFunctions = [
+	'data', 'deactivate',
+	'canActivate', 'canDeactivate', 'canReuse'
+];
 
-export function getAllProperties(obj: any) {
-	let curr = obj;
-	let allProps: Array<string> = [];
-	do {
-		let name: string = curr.constructor.name;
-		if (name !== 'Object') {
-			let props = Object.getOwnPropertyNames(curr);
-			props.forEach(prop => {
-				if (!~allProps.indexOf(prop) && prop !== 'constructor')
-					allProps.push(prop);
-			});
-		} else break;
-	} while (curr = Object.getPrototypeOf(curr));
-	return allProps;
-}
+const vueInstanceFunctions = [
+	'created', 'destroyed', 'beforeDestroy'
+];
 
-export function getValue(object: Object, propertys: string) {
-	let result = null;
-	let keys: string[] = [];
-	if (typeof propertys === 'string') {
-		keys = propertys.split('.');
-	} else {
-		throw new Error('Parameter propertys must be a string.');
-	}
-	let curr = keys.shift();
-	if (!!object[curr]) {
-		result = object[curr];
-		if (typeof result === 'object' && keys.length > 0) {
-			result = getValue(result, keys.join('.'));
-		}
-	}
-	return result;
-}
+export const vue1InstanceFunctions = [
+	'init', 'beforeCompile', 'compiled',
+	'ready', 'attached', 'detached', 'activate'
+].concat(vueInstanceFunctions);
+
+export const vue2InstanceFunctions = [
+	'activated', 'mounted', 'beforeCreate', 'beforeUpdate',
+	'updated', 'deactivated', 'beforeMount', 'render'
+].concat(vueInstanceFunctions);
+
+export let vueVersion: number = (<any>Vue).version.indexOf('1.') === 0 ? 1 : 2;
 
 export function initOptions(options: any) {
 	if (!options.vuex) options.vuex = {};
@@ -91,27 +72,6 @@ export function camelToKebabCase(str: string) {
 export function unCapitalize(str: string) {
 	return str.charAt(0).toLowerCase() + str.slice(1);
 }
-
-export const routerFunctions = [
-	'data', 'deactivate',
-	'canActivate', 'canDeactivate', 'canReuse'
-];
-
-const vueInstanceFunctions = [
-	'created', 'destroyed', 'beforeDestroy'
-];
-
-export const vue1InstanceFunctions = [
-	'init', 'beforeCompile', 'compiled',
-	'ready', 'attached', 'detached', 'activate'
-].concat(vueInstanceFunctions);
-
-export const vue2InstanceFunctions = [
-	'activated', 'mounted', 'beforeCreate', 'beforeUpdate',
-	'updated', 'deactivated', 'beforeMount', 'render'
-].concat(vueInstanceFunctions);
-
-export let vueVersion: number = (<any>Vue).version.indexOf('1.') === 0 ? 1 : 2;
 
 export function parseOptions(instance: any, options: any, keys?: string[]) {
 	if (!keys) {

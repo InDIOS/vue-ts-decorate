@@ -1,12 +1,13 @@
 import {
-	Construct, parseOptions, parseProps,
+	parseOptions, parseProps,
 	camelToKebabCase, initOptions, cleanOptions
 } from '../utils/utilities';
 import Vue = require('vue');
-import { assign } from '../utils/tools';
+import { assign, Construct, scopedCss, scopedHtml, getUniquePrefix, insertCss } from '../utils/tools';
 
 interface Options extends vuejs.ComponentOption {
 	tagName?: string;
+	style?: any;
 	vuex?: {
 		getters?: Object,
 		actions?: Object
@@ -17,7 +18,9 @@ interface Options extends vuejs.ComponentOption {
 export function Component(options?: Options) {
 	if (!options) options = {};
 	let tagName = options.tagName;
+	let style = options.style;
 	delete options.tagName;
+	delete options.style;
 	return function (target: any) {
 		let instance = Construct(target);
 
@@ -39,6 +42,15 @@ export function Component(options?: Options) {
 		options = cleanOptions(options);
 		let data = options.data;
 		options.data = () => assign({}, data);
+
+		if (style || (options.template && ~options.template.indexOf('</style>'))) {
+			let prefix = getUniquePrefix('vcomp', tagName || target.name);
+			options.template = scopedHtml(options.template, prefix);
+			if (style) {
+				style = scopedCss(style, prefix);
+				insertCss(prefix, style);
+			}
+		}
 
 		if (tagName) {
 			tagName = camelToKebabCase(tagName);
