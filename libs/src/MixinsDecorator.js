@@ -12,8 +12,8 @@ function Mixin(options) {
         clearObject(target);
         var proto = target.prototype;
         var mixin = utilities_1.initOptions(options);
-        var instance = utilities_1.Construct(target);
-        var keys = utilities_1.getAllProperties(instance);
+        var instance = tools_1.Construct(target);
+        var keys = tools_1.getAllProperties(instance);
         proto['$mixin$'] = proto['$mixin$'] || [];
         proto['$prop$'] = proto['$prop$'] || {};
         mixin = utilities_1.parseOptions(instance, mixin, keys);

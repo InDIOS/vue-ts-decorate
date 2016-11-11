@@ -1,8 +1,8 @@
 import * as Vue from 'vue';
-import { assign } from '../utils/tools';
+import { Construct, getAllProperties, assign } from '../utils/tools';
 import {
-	Construct, getAllProperties, parseProps,
-	initOptions, cleanOptions, parseOptions
+	 parseProps, initOptions,
+	 cleanOptions, parseOptions
 } from '../utils/utilities';
 
 export function Mixin(options?: any) {

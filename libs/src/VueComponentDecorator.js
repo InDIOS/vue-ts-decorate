@@ -6,9 +6,11 @@ function Component(options) {
     if (!options)
         options = {};
     var tagName = options.tagName;
+    var style = options.style;
     delete options.tagName;
+    delete options.style;
     return function (target) {
-        var instance = utilities_1.Construct(target);
+        var instance = tools_1.Construct(target);
         if (!options.name)
             options.name = target.name;
         options = utilities_1.initOptions(options);
@@ -23,6 +25,14 @@ function Component(options) {
         options = utilities_1.cleanOptions(options);
         var data = options.data;
         options.data = function () { return tools_1.assign({}, data); };
+        if (style || (options.template && ~options.template.indexOf('</style>'))) {
+            var prefix = tools_1.getUniquePrefix('vcomp', tagName || target.name);
+            options.template = tools_1.scopedHtml(options.template, prefix);
+            if (style) {
+                style = tools_1.scopedCss(style, prefix);
+                tools_1.insertCss(prefix, style);
+            }
+        }
         if (tagName) {
             tagName = utilities_1.camelToKebabCase(tagName);
             Vue.component(tagName, options);

@@ -1,9 +1,10 @@
 "use strict";
 var Vue = require('vue');
+var tools_1 = require('../utils/tools');
 var utilities_1 = require('../utils/utilities');
 function Filter(local) {
     return function (target) {
-        var newInstance = utilities_1.Construct(target);
+        var newInstance = tools_1.Construct(target);
         var options = {};
         if (newInstance.filter) {
             options.filter = newInstance.filter;

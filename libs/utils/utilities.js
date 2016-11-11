@@ -1,53 +1,22 @@
 "use strict";
 var Vue = require('vue');
 var tools_1 = require('./tools');
-function Construct(target) {
-    var args = [];
-    for (var _i = 1; _i < arguments.length; _i++) {
-        args[_i - 1] = arguments[_i];
-    }
-    var constructor = function () { return new (target.bind.apply(target, [void 0].concat(args)))(); };
-    constructor.prototype = target.prototype;
-    return new constructor();
-}
-exports.Construct = Construct;
-function getAllProperties(obj) {
-    var curr = obj;
-    var allProps = [];
-    do {
-        var name_1 = curr.constructor.name;
-        if (name_1 !== 'Object') {
-            var props = Object.getOwnPropertyNames(curr);
-            props.forEach(function (prop) {
-                if (!~allProps.indexOf(prop) && prop !== 'constructor')
-                    allProps.push(prop);
-            });
-        }
-        else
-            break;
-    } while (curr = Object.getPrototypeOf(curr));
-    return allProps;
-}
-exports.getAllProperties = getAllProperties;
-function getValue(object, propertys) {
-    var result = null;
-    var keys = [];
-    if (typeof propertys === 'string') {
-        keys = propertys.split('.');
-    }
-    else {
-        throw new Error('Parameter propertys must be a string.');
-    }
-    var curr = keys.shift();
-    if (!!object[curr]) {
-        result = object[curr];
-        if (typeof result === 'object' && keys.length > 0) {
-            result = getValue(result, keys.join('.'));
-        }
-    }
-    return result;
-}
-exports.getValue = getValue;
+exports.routerFunctions = [
+    'data', 'deactivate',
+    'canActivate', 'canDeactivate', 'canReuse'
+];
+var vueInstanceFunctions = [
+    'created', 'destroyed', 'beforeDestroy'
+];
+exports.vue1InstanceFunctions = [
+    'init', 'beforeCompile', 'compiled',
+    'ready', 'attached', 'detached', 'activate'
+].concat(vueInstanceFunctions);
+exports.vue2InstanceFunctions = [
+    'activated', 'mounted', 'beforeCreate', 'beforeUpdate',
+    'updated', 'deactivated', 'beforeMount', 'render'
+].concat(vueInstanceFunctions);
+exports.vueVersion = Vue.version.indexOf('1.') === 0 ? 1 : 2;
 function initOptions(options) {
     if (!options.vuex)
         options.vuex = {};
@@ -101,22 +70,6 @@ function unCapitalize(str) {
     return str.charAt(0).toLowerCase() + str.slice(1);
 }
 exports.unCapitalize = unCapitalize;
-exports.routerFunctions = [
-    'data', 'deactivate',
-    'canActivate', 'canDeactivate', 'canReuse'
-];
-var vueInstanceFunctions = [
-    'created', 'destroyed', 'beforeDestroy'
-];
-exports.vue1InstanceFunctions = [
-    'init', 'beforeCompile', 'compiled',
-    'ready', 'attached', 'detached', 'activate'
-].concat(vueInstanceFunctions);
-exports.vue2InstanceFunctions = [
-    'activated', 'mounted', 'beforeCreate', 'beforeUpdate',
-    'updated', 'deactivated', 'beforeMount', 'render'
-].concat(vueInstanceFunctions);
-exports.vueVersion = Vue.version.indexOf('1.') === 0 ? 1 : 2;
 function parseOptions(instance, options, keys) {
     if (!keys) {
         keys = [];

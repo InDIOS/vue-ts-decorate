@@ -1,5 +1,5 @@
 "use strict";
-var utilities_1 = require('../utils/utilities');
+var tools_1 = require('../utils/tools');
 function Getter(getter) {
     return function (target, key) {
         if (!target.$$getters)
@@ -9,7 +9,7 @@ function Getter(getter) {
         }
         else {
             target.$$getters[key] = function (state) {
-                return utilities_1.getValue(state, getter);
+                return tools_1.getValue(state, getter);
             };
         }
         delete target[key];

@@ -1,4 +1,4 @@
-import { getValue } from '../utils/utilities';
+import { getValue } from '../utils/tools';
 
 export function Getter(getter: string | Function) {
 	return function (target: any, key: string) {

@@ -1,5 +1,6 @@
 import Vue = require('vue');
-import { Construct, camelToKebabCase, vueVersion } from '../utils/utilities';
+import { Construct } from '../utils/tools';
+import { camelToKebabCase, vueVersion } from '../utils/utilities';
 
 interface Options {
 	deep?: boolean;

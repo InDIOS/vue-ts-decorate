@@ -1,5 +1,6 @@
 import Vue = require('vue');
-import { Construct, unCapitalize, vueVersion } from '../utils/utilities';
+import { Construct } from '../utils/tools';
+import { unCapitalize, vueVersion } from '../utils/utilities';
 
 export function Filter(local) {
 	return function (target: any) {

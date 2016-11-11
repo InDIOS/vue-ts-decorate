@@ -1,5 +1,6 @@
 "use strict";
 var Vue = require('vue');
+var tools_1 = require('../utils/tools');
 var utilities_1 = require('../utils/utilities');
 function Directive(params) {
     var options = {};
@@ -10,7 +11,7 @@ function Directive(params) {
         params = local;
     }
     return function (target) {
-        var instance = utilities_1.Construct(target);
+        var instance = tools_1.Construct(target);
         if (options.params && !options.paramWatchers)
             options.paramWatchers = {};
         for (var key in instance) {

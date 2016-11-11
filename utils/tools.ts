@@ -1,7 +1,7 @@
+import { walk } from 'paul';
 import { parse } from 'himalaya';
 import hash = require('hash-sum');
 import absurd = require('absurd-css');
-import { walk } from 'paul';
 import { toHTML } from 'himalaya/translate';
 
 // An samll implementation of ES6 Set.
@@ -72,15 +72,19 @@ export function getValue(object: Object, propertys: string) {
 }
 
 // stolen fron vueify/insert-css
-const inserted = {};
 export function insertCss(id: string, css: string) {
-  if (inserted[id]) return;
-  inserted[id] = true;
-  let sty = document.createElement('style');
-	sty.setAttribute('type', 'text/css');
-	sty.id = id;
-  sty.textContent = css;
-  document.head.appendChild(sty);
+	let isNew = false;
+	let sty = document.head.querySelector('#' + id);
+	if (!sty) {
+		isNew = true;
+		sty = document.createElement('style');
+		sty.setAttribute('type', 'text/css');
+		sty.id = id;
+	}
+	sty.textContent = css;
+	if (isNew) {
+		document.head.appendChild(sty);
+	}
 }
 
 // Polifill of ES6 Object.assign function.
@@ -124,9 +128,9 @@ function isCircular(obj: any) {
 			return;
 		}
 		stackSet.add(obj);
-		for (let k in obj) { //dive on the object's children
-			if (obj.hasOwnProperty(k)) {
-				detect(obj[k]);
+		for (let key in obj) { // dive on the object's children
+			if (obj.hasOwnProperty(key)) {
+				detect(obj[key]);
 			}
 		}
 		stackSet.delete(obj);
@@ -171,7 +175,7 @@ function imports(asd: absurdCss.Absurd, style: any) {
 export function scopedCss(style: any, prefix: string) {
 	prefix = prefix.indexOf('.') !== 0 ? '.' + prefix : prefix;
 	let asd = absurd().scope(prefix);
-	if (typeof style === 'object' && Array.isArray(style)) {
+	if (Array.isArray(style)) {
 		for (let i = 0; i < style.length; i++) {
 			let sty = style[i];
 			imports(asd, sty);
