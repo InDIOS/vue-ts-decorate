@@ -2,7 +2,7 @@ import Vue = require('vue');
 import { Construct } from '../utils/tools';
 import { unCapitalize, vueVersion } from '../utils/utilities';
 
-export function Filter(local) {
+export function Filter(local?: boolean) {
 	return function (target: any) {
 		let newInstance = Construct(target);
 
