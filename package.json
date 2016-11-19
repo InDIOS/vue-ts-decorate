@@ -5,7 +5,7 @@
   "main": "./libs/index.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/InDIOS/vue-ts-decorate.git"
+    "url": "git://github.com/InDIOS/vue-ts-decorate.git"
   },
   "peerDependencies": {
     "vue": "^1.0.28"
