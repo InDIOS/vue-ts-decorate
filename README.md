@@ -6,17 +6,17 @@ A set of [TypeScript](http://www.typescriptlang.org/) decorators for make the wo
 
 ## The Why?
 The projects mentioned in the note above are very good but, for some reasons not include some decorators that i believe are important too,
-further are incompatible with Vue 2.x, although in this module this support is experimental becouse i working it yet and maybe can have some errores.
+further are incompatible with Vue 2.x.x.
 
 ## Features
 
-* **@Component:** Create a Vue componente in the three ways: `Vue.extend`, `Vue.component` and `root` Vue instance (eg. new Vue({ ... })).
+* **@Component:** Create a Vue component in the three ways: `Vue.extend`, `Vue.component` and `root` Vue instance (eg. new Vue({ ... })).
   * **@Prop:** Create a component property.
   * **@On:** Create a component `on` event listener.
   * **@Once:** Create a component `once` event listener.
   * **@Watch:** Create a component watcher.
 
-  > Support for Vuex
+  > Support for Vuex 1.x.x
 
   * **@Getter:** Create a component getter from state property.
   * **@Action:** Create a component action.
@@ -24,6 +24,11 @@ further are incompatible with Vue 2.x, although in this module this support is e
 * **@Filter:** Create a Vue filter, local or global.
 * **@Mixin:** Create a mixin object.
 
+## Use with VueRouter and Vuex 2.x.x
+* VueRouter methods `beforeRouteEnter` and `beforeRouteLeave` are supported as class methods (without decoration).
+* With Vuex, for better usability and performance, use `map*` (* means `State`, `Getters`, `Actions` and `Mutations`) Vuex module methods in component options with object spread operator. 
+
+**Note: Support for 2.x.x is experimental, i working it yet and maybe can have some errores. `Please, report any issues you could have`.**
 > See all the examples below.
 
 ## Usage

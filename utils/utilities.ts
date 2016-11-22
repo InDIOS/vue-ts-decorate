@@ -1,24 +1,24 @@
 import Vue = require('vue');
 import { assign } from './tools';
 
-export const routerFunctions = [
-	'data', 'deactivate',
-	'canActivate', 'canDeactivate', 'canReuse'
+export const routerHooks = [
+	'data', 'deactivate', 'beforeRouteEnter',
+	'canActivate', 'canDeactivate', 'canReuse', 'beforeRouteLeave'
 ];
 
-const vueInstanceFunctions = [
+const vueInstanceHooks = [
 	'created', 'destroyed', 'beforeDestroy'
 ];
 
-export const vue1InstanceFunctions = [
+export const vue1InstanceHooks = [
 	'init', 'beforeCompile', 'compiled',
 	'ready', 'attached', 'detached', 'activate'
-].concat(vueInstanceFunctions);
+].concat(vueInstanceHooks);
 
-export const vue2InstanceFunctions = [
+export const vue2InstanceHooks = [
 	'activated', 'mounted', 'beforeCreate', 'beforeUpdate',
 	'updated', 'deactivated', 'beforeMount', 'render'
-].concat(vueInstanceFunctions);
+].concat(vueInstanceHooks);
 
 export let vueVersion: number = (<any>Vue).version.indexOf('1.') === 0 ? 1 : 2;
 
@@ -94,16 +94,16 @@ export function parseOptions(instance: any, options: any, keys?: string[]) {
 			}
 			else if (typeof (instance[key]) === 'function') {
 				if (key !== 'constructor') {
-					if (~routerFunctions.indexOf(key)) {
+					if (~routerHooks.indexOf(key)) {
 						options.route[key] = instance[key];
 					} else if (vueVersion === 2) {
-						if (~vue2InstanceFunctions.indexOf(key)) {
+						if (~vue2InstanceHooks.indexOf(key)) {
 							options[key] = instance[key];
 						} else {
 							options.methods[key] = instance[key];
 						}
 					} else {
-						if (~vue1InstanceFunctions.indexOf(key)) {
+						if (~vue1InstanceHooks.indexOf(key)) {
 							options[key] = instance[key];
 						} else {
 							options.methods[key] = instance[key];
@@ -128,12 +128,12 @@ export function parseOptions(instance: any, options: any, keys?: string[]) {
 			for (let event in instance.$$events) {
 				options.events[event] = instance.$$events[event];
 			}
-		} else if (key === '$$actions') {
+		} else if (key === '$$actions' && vueVersion === 1) {
 			if (!options.vuex.actions) options.vuex.actions = {};
 			for (let action in instance.$$actions) {
 				options.vuex.actions[action] = instance.$$actions[action];
 			}
-		} else if (key === '$$getters') {
+		} else if (key === '$$getters' && vueVersion === 1) {
 			if (!options.vuex.getters) options.vuex.getters = {};
 			for (let getter in instance.$$getters) {
 				options.vuex.getters[getter] = instance.$$getters[getter];
