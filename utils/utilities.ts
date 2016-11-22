@@ -2,8 +2,8 @@ import Vue = require('vue');
 import { assign } from './tools';
 
 export const routerHooks = [
-	'data', 'deactivate', 'beforeRouteEnter',
-	'canActivate', 'canDeactivate', 'canReuse', 'beforeRouteLeave'
+	'data', 'deactivate',  'canReuse',
+	'canActivate', 'canDeactivate',
 ];
 
 const vueInstanceHooks = [
@@ -16,6 +16,7 @@ export const vue1InstanceHooks = [
 ].concat(vueInstanceHooks);
 
 export const vue2InstanceHooks = [
+	'beforeRouteEnter', 'beforeRouteLeave',
 	'activated', 'mounted', 'beforeCreate', 'beforeUpdate',
 	'updated', 'deactivated', 'beforeMount', 'render'
 ].concat(vueInstanceHooks);
@@ -94,7 +95,7 @@ export function parseOptions(instance: any, options: any, keys?: string[]) {
 			}
 			else if (typeof (instance[key]) === 'function') {
 				if (key !== 'constructor') {
-					if (~routerHooks.indexOf(key)) {
+					if (~routerHooks.indexOf(key) && vueVersion === 1) {
 						options.route[key] = instance[key];
 					} else if (vueVersion === 2) {
 						if (~vue2InstanceHooks.indexOf(key)) {

@@ -10,14 +10,11 @@ further are incompatible with Vue 2.x.x.
 
 ## Features
 
-* **@Component:** Create a Vue component in the three ways: `Vue.extend`, `Vue.component` and `root` Vue instance (eg. new Vue({ ... })).
+* **@Component:** Create a Vue component in the three ways: `Vue.extend`, `Vue.component` and `Vue instance` (eg. `new Vue({ ... })`).
   * **@Prop:** Create a component property.
   * **@On:** Create a component `on` event listener.
   * **@Once:** Create a component `once` event listener.
   * **@Watch:** Create a component watcher.
-
-  > Support for Vuex 1.x.x
-
   * **@Getter:** Create a component getter from state property.
   * **@Action:** Create a component action.
 * **@Directive:** Create a Vue directive, local or global.
@@ -29,6 +26,7 @@ further are incompatible with Vue 2.x.x.
 * With Vuex, for better usability and performance, use `map*` (* means `State`, `Getters`, `Actions` and `Mutations`) Vuex module methods in component options with object spread operator. 
 
 **Note: Support for 2.x.x is experimental, i working it yet and maybe can have some errores. `Please, report any issues you could have`.**
+
 > See all the examples below.
 
 ## Usage
@@ -64,7 +62,7 @@ class MyComponent extends Vue {
 ```
 The code above it is the same that:
 
->NOTE: All Vue Router hooks are also supported as classes methods, except the `activate` hook because it has the same name as the Vue components hook in the version 1.x.x.
+>NOTE: All Vue Router hooks are also supported as classes methods, except the `activate` hook because it has the same name as the Vue components hook in the version 1.x.x. In version 2.x.x only `beforeRouteEnter` and `beforeRouteLeave` are added as hooks.
 
 ```javascript
 new Vue({
@@ -82,14 +80,14 @@ new Vue({
   }
 });
 ```
-The **@Component** decorator receives an object as an optional parameter with the same properties of a Vue component, to these properties is added the `tagname` property which is a string to specify the name of the tag will have the component. If it is present, the component will be a global, otherwise will be local. If `el` property is specified the component will be a root component. See below
+The **@Component** decorator receives an object as an optional parameter with the same properties of a Vue component, to these properties is added the `tagname` property which is a string to specify the name of the tag will have the component. If it is present, the component will be a global, otherwise will be local. If `el` property is specified the component will be a mounted component. See below
 
 ### Example
 
 ```javascript
-// Root Component
+// Mounted Component
 @Component({ el: '#app' })
-class RootComp {
+class MountedComp {
   // ...
 }
 
@@ -109,7 +107,7 @@ class LocalComp {
 The example above it is the same that:
 
 ```javascript
-// Root Component
+// Mounted Component
 new Vue({
   el: '#app',
   // ...
@@ -137,12 +135,12 @@ class LocalComp {
   // ...
 }
 
-// Root Component
+// Main Component
 @Component({ 
   el: '#app',
   components: { LocalComp }
 })
-class RootComp {
+class MainComp {
   // ...
 }
 ```
@@ -269,8 +267,9 @@ Vue.extend({
 });
 ```
 
-## Vuex Support
+## Support for Vuex 1.x.x
 
+> NOTE: In version 2.x.x this decorators fail silent. Please see the Vuex 2 documentation for how to use the `maps` methods.
 ```javascript
 import { someAction } from '../actions';
 import { Component, Getter, Action } from 'vue-ts-decorate';
