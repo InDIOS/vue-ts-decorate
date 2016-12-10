@@ -1,7 +1,7 @@
 "use strict";
-var utilities_1 = require('../utils/utilities');
-var Vue = require('vue');
-var tools_1 = require('../utils/tools');
+var utilities_1 = require("../utils/utilities");
+var Vue = require("vue");
+var tools_1 = require("../utils/tools");
 function Component(options) {
     if (!options)
         options = {};
@@ -15,7 +15,7 @@ function Component(options) {
             options.name = target.name;
         options = utilities_1.initOptions(options);
         options = utilities_1.parseOptions(instance, options);
-        options = utilities_1.parseProps(instance, options);
+        options = utilities_1.parseProps(options);
         if (instance.$mixin$ && instance.$mixin$.length > 0) {
             options.mixins = options.mixins.concat(instance.$mixin$);
         }

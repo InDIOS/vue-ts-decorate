@@ -24,7 +24,7 @@ export function Component(options?: Options) {
 		
 		options = initOptions(options);
 		options = parseOptions(instance, options);
-		options = parseProps(instance, options);
+		options = parseProps(options);
 
 		if (instance.$mixin$ && instance.$mixin$.length > 0) {
 			options.mixins = options.mixins.concat(instance.$mixin$);

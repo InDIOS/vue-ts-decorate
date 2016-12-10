@@ -1,5 +1,5 @@
 "use strict";
-var Filters_Directives_1 = require('./Filters_Directives');
+var Filters_Directives_1 = require("./Filters_Directives");
 describe('Directives', function () {
     describe('Global with options', function () {
         it(' should be an object', function () {

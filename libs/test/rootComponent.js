@@ -8,7 +8,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var index_1 = require('../index');
+var index_1 = require("../index");
 var testElement = document.createElement('div');
 testElement.id = 'test';
 document.body.insertBefore(testElement, document.body.firstChild);
@@ -29,9 +29,11 @@ var TestComponent = (function () {
         return;
     };
     TestComponent.prototype.testPropWatcher = function (newVal, oldVal) {
+        newVal = oldVal;
         return;
     };
     TestComponent.prototype.somePropertyWatcher = function (newVal, oldVal) {
+        newVal = oldVal;
         return;
     };
     TestComponent.prototype.someEvent = function () {
@@ -40,55 +42,55 @@ var TestComponent = (function () {
     TestComponent.prototype.someEventOnce = function () {
         return;
     };
-    __decorate([
-        index_1.Prop(), 
-        __metadata('design:type', String)
-    ], TestComponent.prototype, "someProp", void 0);
-    __decorate([
-        index_1.Prop({
-            type: String
-        }), 
-        __metadata('design:type', String)
-    ], TestComponent.prototype, "someDefaultProp", void 0);
-    __decorate([
-        index_1.Prop(), 
-        __metadata('design:type', Object)
-    ], TestComponent.prototype, "someObjProp", void 0);
-    __decorate([
-        index_1.Prop(), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', []), 
-        __metadata('design:returntype', void 0)
-    ], TestComponent.prototype, "someFuncProp", null);
-    __decorate([
-        index_1.Watch('testProp', { deep: true }), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', [Object, Object]), 
-        __metadata('design:returntype', void 0)
-    ], TestComponent.prototype, "testPropWatcher", null);
-    __decorate([
-        index_1.Watch('someProperty'), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', [Object, Object]), 
-        __metadata('design:returntype', void 0)
-    ], TestComponent.prototype, "somePropertyWatcher", null);
-    __decorate([
-        index_1.On('eventToEmit'), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', []), 
-        __metadata('design:returntype', void 0)
-    ], TestComponent.prototype, "someEvent", null);
-    __decorate([
-        index_1.Once('eventToEmitOnce'), 
-        __metadata('design:type', Function), 
-        __metadata('design:paramtypes', []), 
-        __metadata('design:returntype', void 0)
-    ], TestComponent.prototype, "someEventOnce", null);
-    TestComponent = __decorate([
-        index_1.Component({ el: '#test' }), 
-        __metadata('design:paramtypes', [])
-    ], TestComponent);
     return TestComponent;
 }());
+__decorate([
+    index_1.Prop(),
+    __metadata("design:type", String)
+], TestComponent.prototype, "someProp", void 0);
+__decorate([
+    index_1.Prop({
+        type: String
+    }),
+    __metadata("design:type", String)
+], TestComponent.prototype, "someDefaultProp", void 0);
+__decorate([
+    index_1.Prop(),
+    __metadata("design:type", Object)
+], TestComponent.prototype, "someObjProp", void 0);
+__decorate([
+    index_1.Prop(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TestComponent.prototype, "someFuncProp", null);
+__decorate([
+    index_1.Watch('testProp', { deep: true }),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], TestComponent.prototype, "testPropWatcher", null);
+__decorate([
+    index_1.Watch('someProperty'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", void 0)
+], TestComponent.prototype, "somePropertyWatcher", null);
+__decorate([
+    index_1.On('eventToEmit'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TestComponent.prototype, "someEvent", null);
+__decorate([
+    index_1.Once('eventToEmitOnce'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], TestComponent.prototype, "someEventOnce", null);
+TestComponent = __decorate([
+    index_1.Component({ el: '#test' }),
+    __metadata("design:paramtypes", [])
+], TestComponent);
 module.exports = TestComponent;
 //# sourceMappingURL=rootComponent.js.map

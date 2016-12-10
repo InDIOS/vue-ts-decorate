@@ -1,5 +1,5 @@
 "use strict";
-var tools_1 = require('../utils/tools');
+var tools_1 = require("../utils/tools");
 function Getter(getter) {
     return function (target, key) {
         if (!target.$$getters)

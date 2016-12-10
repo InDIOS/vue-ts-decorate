@@ -1,21 +1,22 @@
 "use strict";
-var Vue = require('vue');
-var tools_1 = require('./tools');
-exports.routerFunctions = [
-    'data', 'deactivate',
-    'canActivate', 'canDeactivate', 'canReuse'
+var Vue = require("vue");
+var tools_1 = require("./tools");
+exports.routerHooks = [
+    'data', 'deactivate', 'canReuse',
+    'canActivate', 'canDeactivate',
 ];
-var vueInstanceFunctions = [
+var vueInstanceHooks = [
     'created', 'destroyed', 'beforeDestroy'
 ];
-exports.vue1InstanceFunctions = [
+exports.vue1InstanceHooks = [
     'init', 'beforeCompile', 'compiled',
     'ready', 'attached', 'detached', 'activate'
-].concat(vueInstanceFunctions);
-exports.vue2InstanceFunctions = [
+].concat(vueInstanceHooks);
+exports.vue2InstanceHooks = [
+    'beforeRouteEnter', 'beforeRouteLeave',
     'activated', 'mounted', 'beforeCreate', 'beforeUpdate',
     'updated', 'deactivated', 'beforeMount', 'render'
-].concat(vueInstanceFunctions);
+].concat(vueInstanceHooks);
 exports.vueVersion = Vue.version.indexOf('1.') === 0 ? 1 : 2;
 function initOptions(options) {
     if (!options.vuex)
@@ -60,7 +61,7 @@ function cleanOptions(options) {
 }
 exports.cleanOptions = cleanOptions;
 function camelToKebabCase(str) {
-    var kebab = str.replace(/([A-Z])/g, function ($1) { return ("-" + $1.toLowerCase()); });
+    var kebab = str.replace(/([A-Z])/g, function ($1) { return "-" + $1.toLowerCase(); });
     if (kebab.charAt(0) === '-')
         kebab = kebab.substring(1);
     return kebab;
@@ -93,11 +94,11 @@ function parseOptions(instance, options, keys) {
             }
             else if (typeof (instance[key]) === 'function') {
                 if (key !== 'constructor') {
-                    if (~exports.routerFunctions.indexOf(key)) {
+                    if (~exports.routerHooks.indexOf(key) && exports.vueVersion === 1) {
                         options.route[key] = instance[key];
                     }
                     else if (exports.vueVersion === 2) {
-                        if (~exports.vue2InstanceFunctions.indexOf(key)) {
+                        if (~exports.vue2InstanceHooks.indexOf(key)) {
                             options[key] = instance[key];
                         }
                         else {
@@ -105,7 +106,7 @@ function parseOptions(instance, options, keys) {
                         }
                     }
                     else {
-                        if (~exports.vue1InstanceFunctions.indexOf(key)) {
+                        if (~exports.vue1InstanceHooks.indexOf(key)) {
                             options[key] = instance[key];
                         }
                         else {
@@ -139,14 +140,14 @@ function parseOptions(instance, options, keys) {
                 options.events[event_1] = instance.$$events[event_1];
             }
         }
-        else if (key === '$$actions') {
+        else if (key === '$$actions' && exports.vueVersion === 1) {
             if (!options.vuex.actions)
                 options.vuex.actions = {};
             for (var action in instance.$$actions) {
                 options.vuex.actions[action] = instance.$$actions[action];
             }
         }
-        else if (key === '$$getters') {
+        else if (key === '$$getters' && exports.vueVersion === 1) {
             if (!options.vuex.getters)
                 options.vuex.getters = {};
             for (var getter in instance.$$getters) {
@@ -164,8 +165,8 @@ function parseOptions(instance, options, keys) {
     return options;
 }
 exports.parseOptions = parseOptions;
-function parseProps(instance, options) {
-    var _loop_1 = function(key) {
+function parseProps(options) {
+    var _loop_1 = function (key) {
         var default_val = options.data[key];
         if (default_val === null || default_val === undefined)
             default_val = options.methods[key];

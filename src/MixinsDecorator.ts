@@ -21,7 +21,7 @@ export function Mixin(options?: any) {
 		proto['$prop$'] = proto['$prop$'] || {};
 
 		mixin = parseOptions(instance, mixin, keys);
-		mixin = parseProps(instance, mixin);
+		mixin = parseProps(mixin);
 
 		let data = mixin.data;
 

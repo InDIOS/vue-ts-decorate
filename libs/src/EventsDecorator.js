@@ -1,6 +1,6 @@
 "use strict";
 function On(eventName) {
-    return function (target, key, descriptor) {
+    return function (target, key) {
         if (!target.$$events)
             target.$$events = {};
         target.$$events[eventName] = target[key];
@@ -11,13 +11,13 @@ function On(eventName) {
 }
 exports.On = On;
 function Once(eventName) {
-    return function (target, key, descriptor) {
+    return function (target, key) {
         if (!target.$$events)
             target.$$events = {};
         target.$$events[eventName] = function () {
             var args = [];
             for (var _i = 0; _i < arguments.length; _i++) {
-                args[_i - 0] = arguments[_i];
+                args[_i] = arguments[_i];
             }
             (_a = target[key]).call.apply(_a, [this].concat(args));
             this.$off(eventName, target.$$events[eventName]);

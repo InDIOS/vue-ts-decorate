@@ -1,6 +1,6 @@
 "use strict";
 var _this = this;
-var TestComponent = require('./extComponent');
+var TestComponent = require("./extComponent");
 describe('Extend Component', function () {
     beforeEach(function () {
         this.options = TestComponent.options;

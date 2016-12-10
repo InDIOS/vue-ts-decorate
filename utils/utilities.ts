@@ -149,7 +149,7 @@ export function parseOptions(instance: any, options: any, keys?: string[]) {
 	return options;
 }
 
-export function parseProps(instance: any, options: any) {
+export function parseProps(options: any) {
 	for (let key in options.props) {
 		let default_val = options.data[key];
 		if (default_val === null || default_val === undefined)

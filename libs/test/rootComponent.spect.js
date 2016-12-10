@@ -1,6 +1,6 @@
 "use strict";
-var Vue = require('vue');
-var TestComponent = require('./rootComponent');
+var Vue = require("vue");
+var TestComponent = require("./rootComponent");
 describe('Root Component', function () {
     beforeEach(function () {
         this.options = TestComponent.$options;

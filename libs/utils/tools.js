@@ -1,9 +1,9 @@
 "use strict";
-var paul_1 = require('paul');
-var himalaya_1 = require('himalaya');
-var hash = require('hash-sum');
-var absurd = require('absurd-css');
-var translate_1 = require('himalaya/translate');
+var paul_1 = require("paul");
+var himalaya_1 = require("himalaya");
+var hash = require("hash-sum");
+var absurd = require("absurd-css");
+var translate_1 = require("himalaya/translate");
 var Set = (function () {
     function Set(keys) {
         this.entries = keys || [];

@@ -1,6 +1,6 @@
 "use strict";
 var _this = this;
-var TestComponent = require('./tagComponent');
+var TestComponent = require("./tagComponent");
 describe('Tag Component', function () {
     beforeEach(function () {
         this.options = TestComponent.options;

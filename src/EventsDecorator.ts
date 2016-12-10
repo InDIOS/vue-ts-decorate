@@ -1,6 +1,6 @@
 //@On annotation, takes an event name. this is only valid for methods
 export function On(eventName: string) {
-	return function (target: any, key: string, descriptor: PropertyDescriptor) {
+	return function (target: any, key: string) {
 		//create the temp events holder if non existane
 		if (!target.$$events) target.$$events = {};
 		target.$$events[eventName] = target[key];
@@ -12,7 +12,7 @@ export function On(eventName: string) {
 
 //@Once annotation, same as @On but will remove the handler when fired
 export function Once(eventName: string) {
-	return function (target: any, key: string, descriptor: PropertyDescriptor) {
+	return function (target: any, key: string) {
 		//create the temp props holder if non existane
 		if (!target.$$events) target.$$events = {};
 		target.$$events[eventName] = function (...args: any[]) {

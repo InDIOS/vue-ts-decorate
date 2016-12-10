@@ -1,7 +1,7 @@
 "use strict";
-var Vue = require('vue');
-var tools_1 = require('../utils/tools');
-var utilities_1 = require('../utils/utilities');
+var Vue = require("vue");
+var tools_1 = require("../utils/tools");
+var utilities_1 = require("../utils/utilities");
 function Mixin(options) {
     if (!options)
         options = {};
@@ -17,7 +17,7 @@ function Mixin(options) {
         proto['$mixin$'] = proto['$mixin$'] || [];
         proto['$prop$'] = proto['$prop$'] || {};
         mixin = utilities_1.parseOptions(instance, mixin, keys);
-        mixin = utilities_1.parseProps(instance, mixin);
+        mixin = utilities_1.parseProps(mixin);
         var data = mixin.data;
         Object.keys(data).forEach(function (key) {
             if (!proto.$prop$[key]) {

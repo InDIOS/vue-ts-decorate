@@ -31,11 +31,13 @@ class ExtComponent {
 
 	@Watch('testProp', { deep: true })
 	testPropWatcher(newVal, oldVal) {
+		newVal = oldVal;
 		return;
 	}
 
 	@Watch('someProperty')
 	somePropertyWatcher(newVal, oldVal) {
+		newVal = oldVal;
 		return;
 	}
 

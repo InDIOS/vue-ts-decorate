@@ -1,7 +1,7 @@
 "use strict";
-var Vue = require('vue');
-var tools_1 = require('../utils/tools');
-var utilities_1 = require('../utils/utilities');
+var Vue = require("vue");
+var tools_1 = require("../utils/tools");
+var utilities_1 = require("../utils/utilities");
 function Directive(params) {
     var options = {};
     if (params) {
@@ -31,7 +31,7 @@ function Directive(params) {
         var attr = utilities_1.camelToKebabCase(target.name);
         var isFunc = Object.keys(options).length === 1 && options.update;
         if (params && utilities_1.vueVersion === 1) {
-            return (_a = {}, _a[attr] = isFunc ? options.update : options, _a);
+            return _a = {}, _a[attr] = isFunc ? options.update : options, _a;
         }
         else {
             if (isFunc) {
