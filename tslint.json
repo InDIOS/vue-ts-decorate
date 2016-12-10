@@ -1,8 +1,6 @@
 {
 	"rules": {
 		"no-unused-expression": true,
-		"no-duplicate-variable": true,
-		"class-name": true,
 		"semicolon": ["always"],
 		"triple-equals": true
 	}

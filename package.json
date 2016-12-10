@@ -17,7 +17,7 @@
     "test": "npm run compile && karma start"
   },
   "dependencies": {
-    "absurd-css": "^0.1.1",
+    "absurd-css": "^0.1.2",
     "hash-sum": "^1.0.2",
     "himalaya": "^0.2.2"
   },
