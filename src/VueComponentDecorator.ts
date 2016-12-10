@@ -8,11 +8,6 @@ import { assign, Construct, scopedCss, scopedHtml, getUniquePrefix, insertCss } 
 interface Options extends vuejs.ComponentOption {
 	tagName?: string;
 	style?: any;
-	vuex?: {
-		getters?: Object,
-		actions?: Object
-	};
-	route?: Object;
 }
 
 export function Component(options?: Options) {

@@ -3,8 +3,8 @@ interface WatchOption {
 	immidiate?: boolean;
 }
 
-export function Watch(name: string)
-export function Watch(name: string, options: WatchOption)
+export function Watch(name: string);
+export function Watch(name: string, options: WatchOption);
 export function Watch(name: string, options?: WatchOption) {
 	return function (target: any, key: string) {
 		if (!target.$$watch) target.$$watch = {};
