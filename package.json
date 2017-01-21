@@ -1,6 +1,6 @@
 {
   "name": "vue-ts-decorate",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "A set of TypeScript decorators for make the work with Vue.js easiest.",
   "main": "./libs/index.js",
   "repository": {
@@ -8,13 +8,14 @@
     "url": "git://github.com/InDIOS/vue-ts-decorate.git"
   },
   "peerDependencies": {
-    "vue": "^1.0.28"
+    "vue": "1.0.28 - 2.1.10"
   },
   "typings": "./index",
   "scripts": {
     "compile": "tsc -p .",
-    "test:watch": "concurrently --kill-others \"npm run compile -- -w\" \"karma start --no-single-run --auto-watch\"",
-    "test": "npm run compile && karma start"
+    "test:start": "karma start",
+    "test:watch": "concurrently --kill-others \"npm run compile -- -w\" \"npm run test:start -- --no-single-run --auto-watch\"",
+    "test": "npm run compile && npm run test:start"
   },
   "dependencies": {
     "absurd-css": "^0.1.2",
@@ -33,7 +34,7 @@
     "karma-jasmine": "^1.0.2",
     "karma-spec-reporter": "0.0.26",
     "typescript": "^2.0.6",
-    "vue": "^1.0.28",
+    "vue": "1.0.28 - 2.1.10",
     "watchify": "^3.7.0"
   }
 }
