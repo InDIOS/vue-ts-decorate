@@ -1,4 +1,17 @@
-export function Prop(options?: vuejs.PropOption) {
+type Constructor = {
+	new (...args: any[]): any;
+};
+
+interface PropOption {
+	type?: Constructor | Constructor[] | null;
+	required?: boolean;
+	default?: any;
+	twoWay?: boolean;
+	validator?(value: any): boolean;
+	coerce?(value: any): any;
+}
+
+export function Prop(options?: PropOption) {
 	return function (target: any, key: string) {
 		//create the temp props holder if non existane
 		if (!target.$$props) target.$$props = {};
