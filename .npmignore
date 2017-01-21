@@ -1,2 +1,5 @@
 .vscode
+test
+libs/test
 tslint.json
+karma.conf.js
