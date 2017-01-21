@@ -7,10 +7,10 @@ export { Getter, Action } from './src/VuexDecorator';
 export { Directive } from './src/VueDirectiveDecorator';
 export { Component } from './src/VueComponentDecorator';
 
-export abstract class VueDirective implements vuejs.Directive {
+export abstract class VueDirective {
 	arg: string;
 	name: string;
-	vm: vuejs.Vue;
+	vm: Object;
 	el: HTMLElement;
 	descriptor: any;
 	expression: string;
