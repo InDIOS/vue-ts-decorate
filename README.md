@@ -12,11 +12,11 @@ further are incompatible with Vue 2.x.x.
 
 * **@Component:** Create a Vue component in the three ways: `Vue.extend`, `Vue.component` and `Vue instance` (eg. `new Vue({ ... })`).
   * **@Prop:** Create a component property.
-  * **@On:** Create a component `on` event listener.
-  * **@Once:** Create a component `once` event listener.
+  * **@On:** Create a component `on` event listener. **--> Work only with Vue 1.x.x**
+  * **@Once:** Create a component `once` event listener. --> **Work only with Vue 1.x.x**
   * **@Watch:** Create a component watcher.
-  * **@Getter:** Create a component getter from state property.
-  * **@Action:** Create a component action.
+  * **@Getter:** Create a component getter from state property. **--> Work only with Vuex >=0.6.3 <0.7.0**
+  * **@Action:** Create a component action. **--> Work only with Vuex >=0.6.3 <0.7.0**
 * **@Directive:** Create a Vue directive, local or global.
 * **@Filter:** Create a Vue filter, local or global.
 * **@Mixin:** Create a mixin object.
@@ -25,9 +25,9 @@ further are incompatible with Vue 2.x.x.
 * VueRouter methods `beforeRouteEnter` and `beforeRouteLeave` are supported as class methods (without decoration).
 * With Vuex, for better usability and performance, use `map*` (* means `State`, `Getters`, `Actions` and `Mutations`) Vuex module methods in component options with object spread operator. 
 
-**Note: Support for 2.x.x is experimental, i working it yet and maybe can have some errores. `Please, report any issues you could have`.**
+# Note: Support for 2.x.x was tested and now is working, enjoy it. 
 
-> See all the examples below.
+## See all the examples below:
 
 ## Usage
 
@@ -80,7 +80,7 @@ new Vue({
   }
 });
 ```
-The **@Component** decorator receives an object as an optional parameter with the same properties of a Vue component, to these properties is added the `tagname` property which is a string to specify the name of the tag will have the component. If it is present, the component will be a global, otherwise will be local. If `el` property is specified the component will be a mounted component. See below
+The **@Component** decorator receives an object as an optional parameter with the same properties of a Vue component, to these properties is added the `componentTag` property which is a string to specify the name of the tag will have the component. If it is present, the component will be a global, otherwise will be local. If `el` property is specified the component will be a mounted component. See below
 
 ### Example
 
@@ -92,7 +92,7 @@ class MountedComp {
 }
 
 // Global Component
-@Component({ tagname: 'globalComp' })
+@Component({ componentTag: 'globalComp' })
 class GlobalComp {
   // ...
 }
@@ -124,7 +124,7 @@ Vue.extend({
   // ...
 });
 ```
-Yes, in the `tagname` you can use the camelCase style, and the name of the class will be the component `name` property in each component.
+Yes, in the `componentTag` you can use the camelCase style.
 
 Components can take other components too, in the options of **@Component**
 
@@ -319,12 +319,13 @@ Vue.extend({
 ```javascript
 import { Component, Directive, VueDirective } from 'vue-ts-decorate';
 
+// The property `name` in directive's option is required to make a safe uglification.
 // This is a global directive.
 // The methods `bind` and `unbind` are optionals
 // just the `update` method is required.
 // NOTE: To get intellitSense and fix possible errors inside the methods,
 // the directive class must be extends of `VueDirective` abstract class
-@Directive({ /* directive options */ } /* or non parameter*/)
+@Directive({ name: 'myGlobalDirective', /* other directive options */ })
 class MyGlobalDirective extends VueDirective {
   bind() {
     // ...
@@ -343,7 +344,7 @@ class MyGlobalDirective extends VueDirective {
 // you can declare a local directive.
 // NOTE: Directives classes just with `update` method
 // are converted to functions, otherwise will be an object.
-@Directive({ local: true, /* directive options */ })
+@Directive({ name: 'myLocalDirective', local: true, /* other directive options */ })
 class MyLocalDirective extends VueDirective {
   update() {
     // ...
@@ -392,12 +393,16 @@ Vue.extend({
 
 ## Filters
 
+### @Filter decorator receives two parameters: 
+
+The first is required and is the name of the filter, and the second is a boolean that indicate if the filter is global or not.
+
 ```javascript
 import { Component, Filter } from 'vue-ts-decorate';
 
 // This is a global filter.
 // The filter class just need a method called `filter`
-@Filter()
+@Filter('myGlobalFilter')
 class MyGlobalFilter {
   filter(value: any, ...params: any[]) {
     // ...
@@ -405,7 +410,7 @@ class MyGlobalFilter {
 }
 
 // This is a local filter.
-@Filter(true)
+@Filter('myLocalFilter', true)
 class MyLocalFilter {
   filter(value: any, ...params: any[]) {
     // ...
@@ -414,9 +419,7 @@ class MyLocalFilter {
 
 // and in the component
 @Component({ 
-  /* other options */,
-  // the name of the filter 
-  // is uncapitalized internaly as well
+  /* other options */
   filters: { MyLocalFilter }
 })
 class MyComponent {
@@ -424,7 +427,7 @@ class MyComponent {
 }
 
 // This is a tow way binding filter.
-@Filter()
+@Filter('myTowWayFilter')
 class MyTowWayFilter {
   read(value: any) {
     // ...
