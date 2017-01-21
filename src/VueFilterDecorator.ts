@@ -1,12 +1,17 @@
-import Vue = require('vue');
+import Vue = require('vue/dist/vue.common');
 import { Construct } from '../utils/tools';
-import { unCapitalize, vueVersion } from '../utils/utilities';
 
-export function Filter(local?: boolean) {
+interface FilterOptions {
+	read?: Function;
+	write?: Function;
+	filter?: Function;
+}
+
+export function Filter(filterName: string, local?: boolean) {
 	return function (target: any) {
 		let newInstance = Construct(target);
 
-		let options: any = {};
+		let options: FilterOptions = {};
 		if (newInstance.filter) {
 			options.filter = newInstance.filter;
 		} else {
@@ -17,17 +22,20 @@ export function Filter(local?: boolean) {
 				}
 			}
 		}
+		
+		if (!filterName) {
+			console.warn(`[vue-ts-decorate] Parameter 'filterName' must be set in filters`);
+		}
 
-		let filter: string = unCapitalize(target.name);
-		if (local && vueVersion === 1) {
-			return { [filter]: options.filter ? options.filter : options };
+		if (local) {
+			return { [filterName]: options.filter ? options.filter : options };
 		} else {
 			if (options.filter) {
-				Vue.filter(filter, options.filter);
+				Vue.filter(filterName, options.filter);
 			} else {
-				Vue.filter(filter, options);
+				Vue.filter(filterName, options);
 			}
-			return Vue.filter(filter);
+			return Vue.filter(filterName);
 		}
 	};
 }

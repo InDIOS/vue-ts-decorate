@@ -1,26 +1,26 @@
-import Vue = require('vue');
+import Vue = require('vue/dist/vue.common');
 import { Construct } from '../utils/tools';
 import { camelToKebabCase, vueVersion } from '../utils/utilities';
 
-interface Options {
+interface DirectiveOptions {
+	name: string;
 	deep?: boolean;
 	local?: boolean;
 	twoWay?: boolean;
 	params?: string[];
 	priority?: number;
 	terminal?: boolean;
+	paramWatchers?: Object;
 	acceptStatement?: boolean;
 }
 
-export function Directive(params?: Options) {
-	let options: any = {};
-	if (params) {
-		let local = params.local;
-		delete params.local;
-		options = params;
-		params = local;
-	}
+export function Directive(options: DirectiveOptions | string) {
 	return function (target: any) {
+		if (typeof options === 'string') {
+			options = { name: options };
+		}
+		let local = options.local;
+		delete options.local;
 		let instance = Construct(target);
 
 		if (options.params && !options.paramWatchers) options.paramWatchers = {};
@@ -38,13 +38,18 @@ export function Directive(params?: Options) {
 			}
 		}
 
-		let attr: string = camelToKebabCase(target.name);
-		let isFunc = Object.keys(options).length === 1 && options.update;
-		if (params && vueVersion === 1) {
-			return { [attr]: isFunc ? options.update : options };
+		if (!options.name) {
+			console.warn(`[vue-ts-decorate] Property 'name' must be set in directives`);
+		}
+		
+		let attr: string = camelToKebabCase(options.name);
+		delete options.name;
+		let updateFunc: boolean | Function = Object.keys(options).length === 1 && (<any>options).update;
+		if (local) {
+			return { [attr]: updateFunc || options };
 		} else {
-			if (isFunc) {
-				Vue.directive(attr, options.update);
+			if (updateFunc) {
+				Vue.directive(attr, updateFunc);
 			} else {
 				Vue.directive(attr, options);
 			}

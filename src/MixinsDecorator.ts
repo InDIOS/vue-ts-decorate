@@ -1,13 +1,17 @@
-import * as Vue from 'vue';
+import Vue = require('vue/dist/vue.common');
 import { Construct, getAllProperties, assign } from '../utils/tools';
 import {
 	 parseProps, initOptions,
-	 cleanOptions, parseOptions
+	 cleanOptions, parseOptions, ComponentOptions
 } from '../utils/utilities';
 
-export function Mixin(options?: any) {
+interface MixinOptions extends ComponentOptions {
+	global?: boolean;
+}
+
+export function Mixin(options?: MixinOptions) {
 	if (!options) options = {};
-	delete options.tagName;
+	delete options.componentTag;
 	let isGlob = options.global;
 	delete options.global;
 	return function (target: any) {

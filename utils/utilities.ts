@@ -1,4 +1,4 @@
-import Vue = require('vue');
+import Vue = require('vue/dist/vue.common');
 import { assign } from './tools';
 
 export const routerHooks = [
@@ -16,16 +16,45 @@ export const vue1InstanceHooks = [
 ].concat(vueInstanceHooks);
 
 export const vue2InstanceHooks = [
-	'beforeRouteEnter', 'beforeRouteLeave',
+	'beforeRouteEnter', 'beforeRouteLeave', 'staticRenderFns',
 	'activated', 'mounted', 'beforeCreate', 'beforeUpdate',
 	'updated', 'deactivated', 'beforeMount', 'render'
 ].concat(vueInstanceHooks);
 
 export let vueVersion: number = (<any>Vue).version.indexOf('1.') === 0 ? 1 : 2;
 
-export function initOptions(options: any) {
+export interface ComponentOptions {
+	el?: string | HTMLElement;
+	name?: string;
+	style?: string | Object | Array<string | Object>;
+	styleUrl?: string;
+	template?: string;
+	templateUrl?: string;
+	componentTag?: string;
+	mixins?: Array<any>;
+	filters?: { [key: string]: Object };
+	directives?: { [key: string]: Object };
+	components?: { [key: string]: Object };
+}
+
+
+interface InternalOptions extends ComponentOptions {
+	data?: Object | Function;
+	vuex?: {
+		getters?: { [key: string]: Function }
+		actions?: { [key: string]: Function }
+	};
+	router?: Object;
+	methods?: { [key: string]: Object };
+	computed?: Object;
+	props?: Object;
+	watch?: { [key: string]: Object };
+	events?: { [key: string]: Object };
+}
+
+export function initOptions(options: InternalOptions) {
 	if (!options.vuex) options.vuex = {};
-	if (!options.route) options.route = {};
+	if (!options.router) options.router = {};
 	if (!options.mixins) options.mixins = [];
 	if (!options.methods) options.methods = {};
 	if (!options.computed) options.computed = {};
@@ -40,25 +69,11 @@ export function initOptions(options: any) {
 	return options;
 }
 
-export function cleanOptions(options: any) {
-	if (Object.keys(options.vuex).length === 0) {
-		delete options.vuex;
-	}
-
-	if (Object.keys(options.route).length === 0) {
-		delete options.route;
-	}
-
-	if (Object.keys(options.computed).length === 0) {
-		delete options.computed;
-	}
-
-	if (Object.keys(options.methods).length === 0) {
-		delete options.methods;
-	}
-
-	if (options.mixins.length === 0) {
-		delete options.mixins;
+export function cleanOptions(options: InternalOptions) {
+	for (let key in options) {
+		if (typeof options[key] === 'object' && Object.keys(options[key]).length === 0) {
+			delete options.vuex;
+		}
 	}
 
 	return options;
@@ -70,11 +85,7 @@ export function camelToKebabCase(str: string) {
 	return kebab;
 }
 
-export function unCapitalize(str: string) {
-	return str.charAt(0).toLowerCase() + str.slice(1);
-}
-
-export function parseOptions(instance: any, options: any, keys?: string[]) {
+export function parseOptions(instance: any, options: InternalOptions, keys?: string[]) {
 	if (!keys) {
 		keys = [];
 		for (let key in instance) keys.push(key);
@@ -96,7 +107,7 @@ export function parseOptions(instance: any, options: any, keys?: string[]) {
 			else if (typeof (instance[key]) === 'function') {
 				if (key !== 'constructor') {
 					if (~routerHooks.indexOf(key) && vueVersion === 1) {
-						options.route[key] = instance[key];
+						options.router[key] = instance[key];
 					} else if (vueVersion === 2) {
 						if (~vue2InstanceHooks.indexOf(key)) {
 							options[key] = instance[key];
@@ -124,7 +135,7 @@ export function parseOptions(instance: any, options: any, keys?: string[]) {
 			for (let watch in instance.$$watch) {
 				options.watch[watch] = instance.$$watch[watch];
 			}
-		} else if (key === '$$events') {
+		} else if (key === '$$events' && vueVersion === 1) {
 			if (!options.events) options.events = {};
 			for (let event in instance.$$events) {
 				options.events[event] = instance.$$events[event];
@@ -149,7 +160,7 @@ export function parseOptions(instance: any, options: any, keys?: string[]) {
 	return options;
 }
 
-export function parseProps(options: any) {
+export function parseProps(options: InternalOptions) {
 	for (let key in options.props) {
 		let default_val = options.data[key];
 		if (default_val === null || default_val === undefined)
