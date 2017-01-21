@@ -1,5 +1,7 @@
-import * as Vue from 'vue';
+import Vue = require('vue/dist/vue.common');
 import TestComponent = require('./rootComponent');
+
+const isVersion2 = (<any>Vue).version.indexOf('2.') === 0;
 
 describe('Root Component', () => {
 
@@ -49,8 +51,11 @@ describe('Root Component', () => {
 				expect(typeof this.options.methods).toBe('object');
 			});
 
-			it(' should have one property', function () {
-				expect(Object.keys(this.options.methods).length).toBe(1);
+			it(` should have ${isVersion2 ? 'two' : 'one'} propert${isVersion2 ? 'ies' : 'y'}`, function () {
+				expect(Object.keys(this.options.methods).length).toBe(isVersion2 ? 2 : 1);
+				if (isVersion2) {
+					expect(typeof this.options.methods.ready).toBe('function');
+				}
 			});
 
 			it(' property should be a function', function () {
@@ -73,7 +78,11 @@ describe('Root Component', () => {
 
 			describe('property 1', () => {
 				it(' should be Null', function () {
-					expect(this.options.props.someProp).toBeNull();
+					if (isVersion2) {
+						expect(this.options.props.someProp.type).toBeNull();
+					} else {
+						expect(this.options.props.someProp).toBeNull();
+					}
 				});
 			});
 
@@ -117,20 +126,28 @@ describe('Root Component', () => {
 
 		});
 
-		describe('.ready', () => {
-			it(' should be defined', function () {
-				expect(this.options.ready).toBeDefined();
+		if (isVersion2) {
+			describe('.ready', () => {
+				it(' should not be defined', function () {
+					expect(this.options.ready).toBeUndefined();
+				});
 			});
+		} else {
+			describe('.ready', () => {
+				it(' should be defined', function () {
+					expect(this.options.ready).toBeDefined();
+				});
 
-			it(' should be an Array', function () {
-				expect(Array.isArray(this.options.ready)).toBeTruthy();
-			});
+				it(' should be an Array', function () {
+					expect(Array.isArray(this.options.ready)).toBeTruthy();
+				});
 
-			it(' should have one function', function () {
-				expect(this.options.ready.length).toBe(1);
-				expect(typeof this.options.ready[0]).toBe('function');
+				it(' should have one function', function () {
+					expect(this.options.ready.length).toBe(1);
+					expect(typeof this.options.ready[0]).toBe('function');
+				});
 			});
-		});
+		}
 
 		describe('.watch', () => {
 			it(' should be defined', function () {
@@ -142,7 +159,7 @@ describe('Root Component', () => {
 			});
 
 			it(' should have two properties', function () {
-				expect((<any>TestComponent)._watchers.length).toBe(2);
+				expect((<any>TestComponent)._watchers.length).toBe(isVersion2 ? 3 : 2);
 			});
 
 			it(' must be defined', () => {
@@ -152,28 +169,36 @@ describe('Root Component', () => {
 				expect((<any>TestComponent)._watchers[0].expression).toBe('testProp');
 				expect((<any>TestComponent)._watchers[0].deep).toBeTruthy();
 				expect((<any>TestComponent)._watchers[1].expression).toBe('someProperty');
-				expect((<any>TestComponent)._watchers[1].deep).toBeUndefined();
+				expect((<any>TestComponent)._watchers[1].deep)[isVersion2 ? 'toBeFalsy' : 'toBeUndefined']();
 			});
 		});
 
-		describe('.events', () => {
-			it(' should be defined', function () {
-				expect(this.options.events).toBeDefined();
+		if (isVersion2) {
+			describe('.events', () => {
+				it(' should not be defined', function () {
+					expect(this.options.events).toBeUndefined();
+				});
 			});
+		} else {
+			describe('.events', () => {
+				it(' should be defined', function () {
+					expect(this.options.events).toBeDefined();
+				});
 
-			it(' should be an object', function () {
-				expect(typeof this.options.events).toBe('object');
-			});
+				it(' should be an object', function () {
+					expect(typeof this.options.events).toBe('object');
+				});
 
-			it(' should have two properties', function () {
-				expect(Object.keys(this.options.events).length).toBe(2);
-			});
+				it(' should have two properties', function () {
+					expect(Object.keys(this.options.events).length).toBe(2);
+				});
 
-			it(' must be functions', function () {
-				for (let key in this.options.events) {
-					expect(typeof this.options.events[key]).toBe('function');
-				}
+				it(' must be functions', function () {
+					for (let key in this.options.events) {
+						expect(typeof this.options.events[key]).toBe('function');
+					}
+				});
 			});
-		});
+		}
 	});
 });

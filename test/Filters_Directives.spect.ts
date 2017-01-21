@@ -1,9 +1,11 @@
+import Vue = require('vue/dist/vue.common');
 import {
 	TestGlobalDirective1, TestGlobalDirective2,
 	TestLocalDirective1, TestLocalDirective2,
 	TestGlobalFilter1, TestGlobalFilter2, 
 	TestLocalFilter1, TestLocalFilter2
 } from './Filters_Directives';
+const isVersion2 = (<any>Vue).version.indexOf('2.') === 0;
 
 describe('Directives', () => {
 	describe('Global with options', () => {
@@ -11,7 +13,7 @@ describe('Directives', () => {
 			expect(TestGlobalDirective1).toBeDefined();
 			expect(typeof TestGlobalDirective1).toBe('object');
 			expect(TestGlobalDirective2).toBeDefined();
-			expect(typeof TestGlobalDirective2).toBe('function');
+			expect(typeof TestGlobalDirective2).toBe(isVersion2 ? 'object' : 'function');
 		});
 
 		it(' should have options', () => {
@@ -32,13 +34,6 @@ describe('Directives', () => {
 			expect(typeof TestGlobalDirective1['update']).toBe('function');
 			expect(TestGlobalDirective1['unbind']).toBeDefined();
 			expect(typeof TestGlobalDirective1['unbind']).toBe('function');
-		});
-	});
-
-	describe('Global as function', () => {
-		it(' should be a function', () => {
-			expect(TestGlobalDirective2).toBeDefined();
-			expect(typeof TestGlobalDirective2).toBe('function');
 		});
 	});
 

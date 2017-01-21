@@ -1,4 +1,7 @@
+import Vue = require('vue/dist/vue.common');
 import TestComponent = require('./extComponent');
+
+const isVersion2 = (<any>Vue).version.indexOf('2.') === 0;
 
 describe('Extend Component', () => {
 
@@ -15,36 +18,46 @@ describe('Extend Component', () => {
 	});
 
 	describe('.options', () => {
-		
-		describe('.components', () => {
-			it(' should be defined', function () {
-				expect(this.options.components).toBeDefined();
+		if (isVersion2) {
+			describe('.template', () => {
+				it(' should not be defined', function () {
+					expect(this.options.template).toBeUndefined();
+				});
 			});
 
-			it(' should be an object', function () {
-				expect(typeof this.options.components).toBe('object');
+			describe('.render', () => {
+				it(' should be defined', function () {
+					expect(this.options.render).toBeDefined();
+				});
+				it(' should be a function', function () {
+					expect(typeof this.options.render === 'function').toBeTruthy();
+				});
 			});
 
-			it(' should contain ExtComponent property', function () {
-				expect(this.options.components.ExtComponent).toBeDefined();
-				expect(typeof this.options.components.ExtComponent).toBe('function');
+			describe('.staticRenderFns', () => {
+				it(' should be defined', function () {
+					expect(this.options.staticRenderFns).toBeDefined();
+				});
+				it(' should be a function', function () {
+					expect(Array.isArray(this.options.staticRenderFns)).toBeTruthy();
+				});
 			});
-		});
+		} else {
+			describe('.template', () => {
+				it(' should be defined', function () {
+					expect(this.options.template).toBeDefined();
+				});
 
-		describe('.template', () => {
-			it(' should be defined', function () {
-				expect(this.options.template).toBeDefined();
-			});
+				it(' should be string', function () {
+					expect(typeof this.options.template).toBe('string');
+				});
 
-			it(' should be string', function () {
-				expect(typeof this.options.template).toBe('string');
+				it(' should contain html', function () {
+					expect(this.options.template).toBe('<h1>{{ msg }}</h1>');
+				});
 			});
+		}
 
-			it(' should contain html', function () {
-				expect(this.options.template).toBe('<h1>{{ msg }}</h1>');
-			});
-		});
-		
 		describe('.data', () => {
 			it(' should be defined', function () {
 				expect(this.options.data).toBeDefined();
@@ -78,8 +91,11 @@ describe('Extend Component', () => {
 				expect(typeof this.options.methods).toBe('object');
 			});
 
-			it(' should have one property', function () {
-				expect(Object.keys(this.options.methods).length).toBe(1);
+			it(` should have ${isVersion2 ? 'two' : 'one'} propert${isVersion2 ? 'ies' : 'y'}`, function () {
+				expect(Object.keys(this.options.methods).length).toBe(isVersion2 ? 2 : 1);
+				if (isVersion2) {
+					expect(typeof this.options.methods.ready).toBe('function');
+				}
 			});
 
 			it(' property should be a function', function () {
@@ -102,7 +118,11 @@ describe('Extend Component', () => {
 
 			describe('property 1', () => {
 				it(' should be Null', function () {
-					expect(this.options.props.someProp).toBeNull();
+					if (isVersion2) {
+						expect(this.options.props.someProp.type).toBeNull();
+					} else {
+						expect(this.options.props.someProp).toBeNull();
+					}
 				});
 			});
 
@@ -146,20 +166,28 @@ describe('Extend Component', () => {
 
 		});
 
-		describe('.ready', () => {
-			it(' should be defined', function () {
-				expect(this.options.ready).toBeDefined();
+		if (isVersion2) {
+			describe('.ready', () => {
+				it(' should not be defined', function () {
+					expect(this.options.ready).toBeUndefined();
+				});
 			});
+		} else {
+			describe('.ready', () => {
+				it(' should be defined', function () {
+					expect(this.options.ready).toBeDefined();
+				});
 
-			it(' should be an Array', function () {
-				expect(Array.isArray(this.options.ready)).toBeTruthy();
-			});
+				it(' should be an Array', function () {
+					expect(Array.isArray(this.options.ready)).toBeTruthy();
+				});
 
-			it(' should have one function', function () {
-				expect(this.options.ready.length).toBe(1);
-				expect(typeof this.options.ready[0]).toBe('function');
+				it(' should have one function', function () {
+					expect(this.options.ready.length).toBe(1);
+					expect(typeof this.options.ready[0]).toBe('function');
+				});
 			});
-		});
+		}
 
 		describe('.watch', () => {
 			it(' should be defined', function () {
@@ -173,24 +201,32 @@ describe('Extend Component', () => {
 			});
 		});
 
-		describe('.events', () => {
-			it(' should be defined', function () {
-				expect(this.options.events).toBeDefined();
+		if (isVersion2) {
+			describe('.events', () => {
+				it(' should not be defined', function () {
+					expect(this.options.events).toBeUndefined();
+				});
 			});
+		} else {
+			describe('.events', () => {
+				it(' should be defined', function () {
+					expect(this.options.events).toBeDefined();
+				});
 
-			it(' should be an object', function () {
-				expect(typeof this.options.events).toBe('object');
-			});
+				it(' should be an object', function () {
+					expect(typeof this.options.events).toBe('object');
+				});
 
-			it(' should have two properties', function () {
-				expect(Object.keys(this.options.events).length).toBe(2);
-			});
+				it(' should have two properties', function () {
+					expect(Object.keys(this.options.events).length).toBe(2);
+				});
 
-			it(' must be functions', function () {
-				for (let key in this.options.events) {
-					expect(typeof this.options.events[key]).toBe('function');
-				}
+				it(' must be functions', function () {
+					for (let key in this.options.events) {
+						expect(typeof this.options.events[key]).toBe('function');
+					}
+				});
 			});
-		});
+		}
 	});
 });

@@ -1,6 +1,6 @@
 import { Component, Prop, Watch, On, Once } from '../index';
 
-@Component({ tagName: 'TestComp', template: '<h1>{{ msg }}</h1>' })
+@Component({ componentTag: 'TagComponent', template: '<h1>{{ msg }}</h1>' })
 class TagComponent {
 	someProperty: string = 'Hello!';
 	testProp: { prop: string } = { prop: 'test prop' };
