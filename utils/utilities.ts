@@ -35,6 +35,7 @@ export interface ComponentOptions {
 	filters?: { [key: string]: Object };
 	directives?: { [key: string]: Object };
 	components?: { [key: string]: Object };
+	[key: string]: any;
 }
 
 
@@ -72,10 +73,9 @@ export function initOptions(options: InternalOptions) {
 export function cleanOptions(options: InternalOptions) {
 	for (let key in options) {
 		if (typeof options[key] === 'object' && Object.keys(options[key]).length === 0) {
-			delete options.vuex;
+			delete options[key];
 		}
 	}
-
 	return options;
 }
 
