@@ -1,8 +1,8 @@
 import Vue = require('vue/dist/vue.common');
-import { Construct } from '../utils/tools';
+import { parentMethods } from '../utils/tools';
 import { camelToKebabCase, vueVersion } from '../utils/utilities';
 
-interface DirectiveOptions {
+export interface DirectiveOptions {
 	name: string;
 	deep?: boolean;
 	local?: boolean;
@@ -21,8 +21,8 @@ export function Directive(options: DirectiveOptions | string) {
 		}
 		let local = options.local;
 		delete options.local;
-		let instance = Construct(target);
-
+		let instance = new target();
+		parentMethods(target, instance);
 		if (options.params && !options.paramWatchers) options.paramWatchers = {};
 
 		for (let key in instance) {

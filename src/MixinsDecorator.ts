@@ -1,11 +1,9 @@
+import { parseProps, initOptions, cleanOptions, parseOptions } from '../utils/utilities';
 import Vue = require('vue/dist/vue.common');
-import { Construct, getAllProperties, assign } from '../utils/tools';
-import {
-	 parseProps, initOptions,
-	 cleanOptions, parseOptions, ComponentOptions
-} from '../utils/utilities';
+import { getAllProperties, assign } from '../utils/tools';
+import { ComponentOptions } from '../types/index';
 
-interface MixinOptions extends ComponentOptions {
+export interface MixinOptions extends ComponentOptions {
 	global?: boolean;
 }
 
@@ -18,7 +16,7 @@ export function Mixin(options?: MixinOptions) {
 		clearObject(target);
 		let proto = target.prototype;
 		let mixin = initOptions(options);
-		let instance = Construct(target);
+		let instance = new target();
 		let keys = getAllProperties(instance);
 
 		proto['$mixin$'] = proto['$mixin$'] || [];

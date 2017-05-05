@@ -1,5 +1,8 @@
 .vscode
 test
 libs/test
+src
+index.ts
+tsconfig.json
 tslint.json
 karma.conf.js

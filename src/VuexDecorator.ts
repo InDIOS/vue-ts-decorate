@@ -1,4 +1,4 @@
-import { getValue } from '../utils/tools';
+import { getDeepValue } from '../utils/tools';
 
 export function Getter(getter: string | Function) {
 	return function (target: any, key: string) {
@@ -8,7 +8,7 @@ export function Getter(getter: string | Function) {
 			target.$$getters[key] = getter;
 		} else {
 			target.$$getters[key] = (state: Object) => {
-				return getValue(state, getter);
+				return getDeepValue(state, getter);
 			};
 		}
 		//remove it from the instance so it is not added to data

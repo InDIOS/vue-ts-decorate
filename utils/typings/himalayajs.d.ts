@@ -1,16 +1,16 @@
-declare namespace himalayajs {
-	interface Node {
+declare module 'himalaya' {
+	export interface Node {
 		type: string;
 	}
 
-	interface Attributes {
+	export interface Attributes {
 		id?: string;
 		title?: string;
 		className?: Array<string>;
 		[key: string]: any;
 	}
 
-	interface Element extends Node {
+	export interface Element extends Node {
 		tagName?: string;
 		content?: string;
 		style?: Attributes;
@@ -18,10 +18,8 @@ declare namespace himalayajs {
 		attributes?: Attributes;
 		children?: Array<Element>;
 	}
-}
 
-declare module 'himalaya' {
-	export function parse(html: string): Array<himalayajs.Element>;
+	export function parse(html: string): Array<Element>;
 }
 
 declare module 'himalaya/translate' {

@@ -1,64 +1,80 @@
-import {
-	parseOptions, parseProps, ComponentOptions,
-	camelToKebabCase, initOptions, cleanOptions
-} from '../utils/utilities';
 import Vue = require('vue/dist/vue.common');
+import { ComponentOptions } from '../types/index';
+import { assign, scopedCss, scopedHtml, insertCss, deleteCss } from '../utils/tools';
 import {
-	assign, Construct, scopedCss,
-	scopedHtml, getUniquePrefix, insertCss
-} from '../utils/tools';
+	parseOptions, parseProps, camelToKebabCase, initOptions,
+	cleanOptions, InternalOptions, vueVersion
+} from '../utils/utilities';
 
 export function Component(options?: ComponentOptions) {
-	if (!options) options = {};
-	let tagName = options.componentTag;
-	let style = options.style;
-	let name = options.name;
-	delete options.componentTag;
-	delete options.style;
-	delete options.name;
-	return function (target: any) {
-		let instance = Construct(target);
-		
-		options = initOptions(options);
-		options = parseOptions(instance, options);
-		options = parseProps(options);
+	let opt: InternalOptions = options || {};
+	let tagName = opt.componentTag;
+	let style = opt.style;
+	delete opt.componentTag;
+	delete opt.style;
+	return (target: any) => {
+		let instance = new target();
+		opt = initOptions(opt);
+		opt = parseOptions(instance, opt);
+		opt = parseProps(opt);
 
 		if (instance.$mixin$ && instance.$mixin$.length > 0) {
-			options.mixins = options.mixins.concat(instance.$mixin$);
-		}		
+			opt.mixins = opt.mixins.concat(instance.$mixin$);
+		}
 
 		for (let key in instance.$$methodsToRemove) {
-			delete (<any>options).methods[instance.$$methodsToRemove[key]];
+			delete opt.methods[instance.$$methodsToRemove[key]];
 		}
 
-		options = cleanOptions(options);
-		let data = (<any>options).data;
-		(<any>options).data = () => assign({}, data);
+		opt = cleanOptions(opt);
+		let data = opt.data;
+		opt.data = () => assign({}, data);
 
-		if (style || (options.template && ~options.template.indexOf('</style>'))) {
-			let prefix = getUniquePrefix('vcomp', tagName || name || target.name);
-			options.template = scopedHtml(options.template, prefix);
-			if (style) {
-				style = scopedCss(style, prefix);
-				insertCss(prefix, style as string);
+		if (style && opt.template) {
+			let { className, styleText } = scopedCss(style);
+			let insertIn = vueVersion === 1 ? 'attached' : 'beforeMount';
+
+			opt.template = scopedHtml(opt.template, className);
+
+			if (opt.attached || opt.beforeMount) {
+				let orgMethod = opt.attached || opt.beforeMount;
+				opt[insertIn] = insertStyle(className, styleText, orgMethod);
+			} else if (!opt.attached || !opt.beforeMount) {
+				opt[insertIn] = insertStyle(className, styleText);
 			}
-		}
 
-		if (Vue.compile && options.template) {
-			if (!(<any>options).render || !(<any>options).staticRenderFns) {
-				let renders = Vue.compile(options.template);
-				(<any>options).render = (<any>options).render || renders.render;
-				(<any>options).staticRenderFns = (<any>options).staticRenderFns || renders.staticRenderFns;
-				delete options.template;
+			if (opt.beforeDestroy) {
+				let orgMethod = opt.beforeDestroy;
+				opt.beforeDestroy = deleteStyle(className, orgMethod);
+			} else {
+				opt.beforeDestroy = deleteStyle(className);
 			}
 		}
 
 		if (tagName) {
 			tagName = camelToKebabCase(tagName);
-			Vue.component(tagName, options);
+			Vue.component(tagName, opt);
 			return Vue.component(tagName);
 		} else {
-			return !!options.el ? new Vue(options) : Vue.extend(options);
+			return !!opt.el ? new Vue(opt) : Vue.extend(opt);
+		}
+	};
+}
+
+function insertStyle(id: string, style: string, orgMethod?: Function) {
+	return function () {
+		insertCss(id, style);
+		if (orgMethod) {
+			orgMethod.call(this);
+		}
+	};
+}
+
+function deleteStyle(id: string, orgMethod?: Function) {
+	return function () {
+		deleteCss(id);
+		if (orgMethod) {
+			orgMethod.call(this);
 		}
 	};
 }

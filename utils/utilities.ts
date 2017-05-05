@@ -1,5 +1,6 @@
 import Vue = require('vue/dist/vue.common');
-import { assign } from './tools';
+import { ComponentOptions } from '../types/index';
+import { assign, getAllProperties } from './tools';
 
 export const routerHooks = [
 	'data', 'deactivate',  'canReuse',
@@ -18,28 +19,16 @@ export const vue1InstanceHooks = [
 export const vue2InstanceHooks = [
 	'beforeRouteEnter', 'beforeRouteLeave', 'staticRenderFns',
 	'activated', 'mounted', 'beforeCreate', 'beforeUpdate',
-	'updated', 'deactivated', 'beforeMount', 'render'
+	'updated', 'deactivated', 'beforeMount', 'render', 'renderError'
 ].concat(vueInstanceHooks);
 
-export let vueVersion: number = (<any>Vue).version.indexOf('1.') === 0 ? 1 : 2;
+export let vueVersion: number = Vue.version.indexOf('1.') === 0 ? 1 : 2;
 
-export interface ComponentOptions {
-	el?: string | HTMLElement;
-	name?: string;
-	style?: string | Object | Array<string | Object>;
-	styleUrl?: string;
-	template?: string;
-	templateUrl?: string;
-	componentTag?: string;
-	mixins?: Array<any>;
-	filters?: { [key: string]: Object };
-	directives?: { [key: string]: Object };
-	components?: { [key: string]: Object };
-	[key: string]: any;
-}
+export type Constructor = {
+	new (...args: any[]): any;
+};
 
-
-interface InternalOptions extends ComponentOptions {
+export interface InternalOptions extends ComponentOptions {
 	data?: Object | Function;
 	vuex?: {
 		getters?: { [key: string]: Function }
@@ -51,6 +40,7 @@ interface InternalOptions extends ComponentOptions {
 	props?: Object;
 	watch?: { [key: string]: Object };
 	events?: { [key: string]: Object };
+	[key: string]: any;
 }
 
 export function initOptions(options: InternalOptions) {
@@ -87,8 +77,7 @@ export function camelToKebabCase(str: string) {
 
 export function parseOptions(instance: any, options: InternalOptions, keys?: string[]) {
 	if (!keys) {
-		keys = [];
-		for (let key in instance) keys.push(key);
+		keys = getAllProperties(instance);
 	}
 	for (let i = 0; i < keys.length; i++) {
 		let key = keys[i];
@@ -105,21 +94,19 @@ export function parseOptions(instance: any, options: InternalOptions, keys?: str
 				options.computed[key] = computed_obj;
 			}
 			else if (typeof (instance[key]) === 'function') {
-				if (key !== 'constructor') {
-					if (~routerHooks.indexOf(key) && vueVersion === 1) {
-						options.router[key] = instance[key];
-					} else if (vueVersion === 2) {
-						if (~vue2InstanceHooks.indexOf(key)) {
-							options[key] = instance[key];
-						} else {
-							options.methods[key] = instance[key];
-						}
+				if (~routerHooks.indexOf(key) && vueVersion === 1) {
+					options.router[key] = instance[key];
+				} else if (vueVersion === 2) {
+					if (~vue2InstanceHooks.indexOf(key)) {
+						options[key] = instance[key];
 					} else {
-						if (~vue1InstanceHooks.indexOf(key)) {
-							options[key] = instance[key];
-						} else {
-							options.methods[key] = instance[key];
-						}
+						options.methods[key] = instance[key];
+					}
+				} else {
+					if (~vue1InstanceHooks.indexOf(key)) {
+						options[key] = instance[key];
+					} else {
+						options.methods[key] = instance[key];
 					}
 				}
 			} else {

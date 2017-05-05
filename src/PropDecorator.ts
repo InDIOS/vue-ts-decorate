@@ -1,8 +1,6 @@
-type Constructor = {
-	new (...args: any[]): any;
-};
+import { Constructor } from '../utils/utilities';
 
-interface PropOption {
+export interface PropOption {
 	type?: Constructor | Constructor[] | null;
 	required?: boolean;
 	default?: any;

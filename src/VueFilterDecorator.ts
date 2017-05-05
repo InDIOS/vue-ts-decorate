@@ -1,5 +1,5 @@
 import Vue = require('vue/dist/vue.common');
-import { Construct } from '../utils/tools';
+import { parentMethods } from '../utils/tools';
 
 interface FilterOptions {
 	read?: Function;
@@ -9,8 +9,8 @@ interface FilterOptions {
 
 export function Filter(filterName: string, local?: boolean) {
 	return function (target: any) {
-		let newInstance = Construct(target);
-
+		let newInstance = new target();
+		parentMethods(target, newInstance);
 		let options: FilterOptions = {};
 		if (newInstance.filter) {
 			options.filter = newInstance.filter;

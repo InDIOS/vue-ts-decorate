@@ -1,8 +1,9 @@
 import { walk } from 'paul';
-import { parse } from 'himalaya';
-import hash = require('hash-sum');
-import absurd = require('absurd-css');
+import abs = require('./cssProcesor');
+import { parse, Element } from 'himalaya';
 import { toHTML } from 'himalaya/translate';
+import { StyleObject, StyleRuleObject } from '../types/index';
+import { camelToKebabCase } from './utilities';
 
 // An samll implementation of ES6 Set.
 class Set {
@@ -31,10 +32,12 @@ class Set {
 	}
 }
 
-export function Construct(target, ...args) {
-	let constructor: any = () => new target(...args);
-	constructor.prototype = target.prototype;
-	return new constructor();
+export function parentMethods(target: Function, instance: Object) {
+	if (Array.prototype['findIndex']) {
+		Object.getOwnPropertyNames(target.prototype).forEach(prop => {
+			instance[prop] = target.prototype[prop];
+		});
+	}
 }
 
 export function getAllProperties(obj: any) {
@@ -42,7 +45,7 @@ export function getAllProperties(obj: any) {
 	let allProps: Array<string> = [];
 	do {
 		let name: string = curr.constructor.name;
-		if (name !== 'Object') {
+		if (name !== 'Object' && name !== 'Vue') {
 			let props = Object.getOwnPropertyNames(curr);
 			props.forEach(prop => {
 				if (!~allProps.indexOf(prop) && prop !== 'constructor')
@@ -53,22 +56,14 @@ export function getAllProperties(obj: any) {
 	return allProps;
 }
 
-export function getValue(object: Object, propertys: string) {
-	let result = null;
+export function getDeepValue(object: Object, propertys: string) {
 	let keys: string[] = [];
 	if (typeof propertys === 'string') {
 		keys = propertys.split('.');
 	} else {
 		throw new Error('Parameter propertys must be a string.');
 	}
-	let curr = keys.shift();
-	if (!!object[curr]) {
-		result = object[curr];
-		if (typeof result === 'object' && keys.length > 0) {
-			result = getValue(result, keys.join('.'));
-		}
-	}
-	return result;
+	return keys.reduce((o, p) => (o || {})[p], object);;
 }
 
 // stolen fron vueify/insert-css
@@ -87,6 +82,13 @@ export function insertCss(id: string, css: string) {
 	}
 }
 
+export function deleteCss(id: string) {
+	let sty = <HTMLStyleElement>document.head.querySelector('#' + id);
+	if (sty) {
+		document.head.removeChild(sty);
+	}
+}
+
 // Polifill of ES6 Object.assign function.
 export function assign<T, U>(target: T, source: U): T & U;
 export function assign<T, U, V>(target: T, source1: U, source2: V): T & U & V;
@@ -94,20 +96,21 @@ export function assign<T, U, V, W>(target: T, source1: U, source2: V, source3: W
 export function assign<T, U, V, W, X>(target: T, source1: U, source2: V, source3: W, source4: X): T & U & V & W & X;
 export function assign<T, U, V, W, X, Z>(target: T, source1: U, source2: V, source3: W, source4: X, source5: Z): T & U & V & W & X & Z;
 export function assign(target: any, ...sources: any[]): any {
-	'use strict';
 	// We must check against these specific cases.
 	if (target === undefined || target === null) {
 		throw new TypeError('Cannot convert undefined or null to object');
 	}
 	let output: any = Object(target);
-	for (let index = 0; index < sources.length; index++) {
-		let source = sources[index];
+	for (let i = 0; i < sources.length; i++) {
+		let source = sources[i];
 		if (source !== undefined && source !== null) {
 			for (let nextKey in source) {
 				if (source.hasOwnProperty(nextKey) && !isCircular(source[nextKey])) {
 					output[nextKey] = source[nextKey];
 					if (typeof source[nextKey] === 'object') {
 						output[nextKey] = assign({}, source[nextKey]);
+					} else if (Array.isArray(source[nextKey])) {
+						output[nextKey] = source[nextKey].slice();
 					}
 				} else {
 					output[nextKey] = output;
@@ -119,10 +122,10 @@ export function assign(target: any, ...sources: any[]): any {
 }
 
 // http://stackoverflow.com/a/34909127
-function isCircular(obj: any) {
+function isCircular(obj: Object) {
 	let detected = false;
 	let stackSet = new Set();
-	function detect(obj: any) {
+	function detect(obj: Object) {
 		if (typeof obj !== 'object' || stackSet.has(obj)) {
 			detected = typeof obj === 'object';
 			return;
@@ -140,48 +143,71 @@ function isCircular(obj: any) {
 	return detected;
 }
 
-export function getUniquePrefix(prefix: string, secret: string) {
-	return prefix + '-' + hash(secret);
-}
-
-export function scopedHtml(html: string, prefix: string) {
+export function scopedHtml(html: string, className: string) {
 	let tree = parse(html);
-	walk(tree, (node: himalayajs.Element, walk: Function) => {
+	walk(tree, (node: Element, walk: Function) => {
 		if (node.tagName && ~node.tagName.indexOf('-')) return;
 		if (!node.attributes || !node.attributes.className) {
 			node.attributes = node.attributes || {};
-			if (node.tagName === 'style') {
-				node.attributes.id = prefix;
-				node.content = scopedCss(node.content, prefix);
-			} else if (!/(script|template)/.test(node.tagName)) {
-				node.attributes.className = [prefix];
+			if (node.tagName === 'template') {
+				let attrs = Object.keys(node.attributes)
+					.filter(at => !!~camelToKebabCase(at).indexOf('v-')) || [];
+				if (attrs.length > 0) {
+					node.children[0].content = scopedHtml(node.children[0].content, className);
+				}
+			} else if (node.tagName !== 'script' && node.tagName !== 'style') {
+				node.attributes.className = [className];
 			}
 		} else {
-			node.attributes.className.unshift(prefix);
+			node.attributes.className.unshift(className);
 		}
 		walk(node.children || []);
 	});
 	return toHTML(tree);
 }
 
-function imports(asd: absurdCss.Absurd, style: any) {
-	if (typeof style === 'string') {
-		asd.importCSS(style);
-	} else if (typeof style === 'object' || typeof style === 'function') {
-		asd.import(style);
+function pad(hash: string, len: number) {
+	while (hash.length < len) {
+		hash = `0${hash}`;
 	}
+	return hash;
 }
 
-export function scopedCss(style: any, prefix: string) {
-	prefix = prefix.indexOf('.') !== 0 ? '.' + prefix : prefix;
-	let asd = absurd().scope(prefix);
-	if (Array.isArray(style)) {
-		for (let i = 0; i < style.length; i++) {
-			let sty = style[i];
-			imports(asd, sty);
-		}
-	} else {
-		imports(asd, style);
+function fold(hash: number, text: string) {
+	let i, chr, len;
+	if (text.length === 0) {
+		return hash;
 	}
-	return asd.compile({ minify: true });
+	for (i = 0, len = text.length; i < len; i++) {
+		chr = text.charCodeAt(i);
+		hash = ((hash << 5) - hash) + chr;
+		hash |= 0;
+	}
+	return hash < 0 ? hash * -2 : hash;
+}
+
+export function hash(value: string) {
+	let preHash = fold(0, value);
+	if (value === null) {
+		preHash = fold(preHash, 'null');
+	} else if (value === undefined) {
+		preHash = fold(preHash, 'undefined');
+	} else {
+		preHash = fold(preHash, value.toString());
+	}
+	return pad(preHash.toString(16), 8);
+}
+
+export function scopedCss(style: StyleObject | StyleRuleObject) {
+	const css = abs({ minify: true });
+	let rules = style['rules'] ? <StyleRuleObject>style['rules'] : <StyleRuleObject>style;
+	if (style['props']) {
+		let props = style['props'];
+		for (let prop in props) {
+			if (props.hasOwnProperty(prop)) {
+				css.prop(prop, props[prop]);
+			}
+		}
+	}
+	return css(rules);
 }

@@ -1,6 +1,6 @@
 import { Component, Prop, Watch, On, Once } from '../index';
 
-@Component({ template: '<h1>{{ msg }}</h1>' })
+@Component({ template: '<h1>{{ msg }}</h1>',  })
 class ExtComponent {
 	someProperty: string = 'Hello!';
 	testProp: { prop: string } = { prop: 'test prop' };

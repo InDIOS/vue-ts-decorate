@@ -1,4 +1,4 @@
-interface WatchOption {
+export interface WatchOption {
 	deep?: boolean;
 	immidiate?: boolean;
 }
