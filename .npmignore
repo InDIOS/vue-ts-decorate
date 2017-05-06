@@ -1,7 +1,9 @@
 .vscode
 test
-libs/test
 src
+utils
+!libs/src
+!libs/utils
 index.ts
 tsconfig.json
 tslint.json
