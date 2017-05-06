@@ -4,6 +4,3 @@ npm-debug.log*
 # Dependency directories
 node_modules
 libs
-
-#Yarn lock file
-yarn.lock
