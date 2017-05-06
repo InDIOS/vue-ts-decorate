@@ -1,4 +1,4 @@
-import Vue = require('vue/dist/vue.common');
+import Vue = require('vue');
 import { ComponentOptions } from '../types/index';
 import { assign, scopedCss, scopedHtml, insertCss, deleteCss } from '../utils/tools';
 import {
@@ -53,10 +53,10 @@ export function Component(options?: ComponentOptions) {
 
 		if (tagName) {
 			tagName = camelToKebabCase(tagName);
-			Vue.component(tagName, opt);
+			Vue.component(tagName, <vuejs.ComponentOption>(<any>opt));
 			return Vue.component(tagName);
 		} else {
-			return !!opt.el ? new Vue(opt) : Vue.extend(opt);
+			return !!opt.el ? new Vue(<vuejs.ComponentOption>(<any>opt)) : Vue.extend(<vuejs.ComponentOption>(<any>opt));
 		}
 	};
 }

@@ -1,4 +1,4 @@
-import Vue = require('vue/dist/vue.common');
+import Vue = require('vue');
 import { ComponentOptions } from '../types/index';
 import { assign, getAllProperties } from './tools';
 
@@ -22,7 +22,7 @@ export const vue2InstanceHooks = [
 	'updated', 'deactivated', 'beforeMount', 'render', 'renderError'
 ].concat(vueInstanceHooks);
 
-export let vueVersion: number = Vue.version.indexOf('1.') === 0 ? 1 : 2;
+export let vueVersion: number = Vue['version'].indexOf('1.') === 0 ? 1 : 2;
 
 export type Constructor = {
 	new (...args: any[]): any;
@@ -175,6 +175,16 @@ export function parseProps(options: InternalOptions) {
 			key = camelToKebabCase(key);
 			if (directive[key]) directive = directive[key];
 			options.directives[key] = directive;
+		}
+	}
+
+	if (options.components) {
+		for (let key in options.components) {
+			let component = options.components[key];
+			delete options.components[key];
+			key = camelToKebabCase(key);
+			if (component[key]) component = component[key];
+			options.components[key] = component;
 		}
 	}
 

@@ -1,5 +1,5 @@
 import { parseProps, initOptions, cleanOptions, parseOptions } from '../utils/utilities';
-import Vue = require('vue/dist/vue.common');
+import Vue = require('vue');
 import { getAllProperties, assign } from '../utils/tools';
 import { ComponentOptions } from '../types/index';
 

@@ -1,4 +1,4 @@
-import Vue = require('vue/dist/vue.common');
+import Vue = require('vue');
 import { parentMethods } from '../utils/tools';
 
 interface FilterOptions {

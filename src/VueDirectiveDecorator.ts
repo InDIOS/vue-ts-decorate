@@ -1,4 +1,4 @@
-import Vue = require('vue/dist/vue.common');
+import Vue = require('vue');
 import { parentMethods } from '../utils/tools';
 import { camelToKebabCase, vueVersion } from '../utils/utilities';
 
@@ -44,11 +44,11 @@ export function Directive(options: DirectiveOptions | string) {
 		
 		let attr: string = camelToKebabCase(options.name);
 		delete options.name;
-		let updateFunc: boolean | Function = Object.keys(options).length === 1 && (<any>options).update;
+		let updateFunc: boolean | Function | vuejs.DirectiveOption = Object.keys(options).length === 1 && (<any>options).update;
 		if (local) {
 			return { [attr]: updateFunc || options };
 		} else {
-			if (updateFunc) {
+			if (typeof updateFunc !== 'boolean') {
 				Vue.directive(attr, updateFunc);
 			} else {
 				Vue.directive(attr, options);
