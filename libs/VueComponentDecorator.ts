@@ -1,5 +1,5 @@
-import Vue = require('vue');
-import { ComponentOptions } from '../types/index';
+import Vue from 'vue';
+import { ComponentOptions } from 'vue-ts-decorate';
 import { assign, scopedCss, scopedHtml, insertCss, deleteCss } from '../utils/tools';
 import {
 	parseOptions, parseProps, camelToKebabCase, initOptions,
@@ -9,9 +9,7 @@ import {
 export function Component(options?: ComponentOptions) {
 	let opt: InternalOptions = options || {};
 	let tagName = opt.componentTag;
-	let style = opt.style;
 	delete opt.componentTag;
-	delete opt.style;
 	return (target: any) => {
 		let instance = new target();
 		opt = initOptions(opt);
@@ -30,24 +28,34 @@ export function Component(options?: ComponentOptions) {
 		let data = opt.data;
 		opt.data = () => assign({}, data);
 
-		if (style && opt.template) {
-			let { className, styleText } = scopedCss(style);
-			let insertIn = vueVersion === 1 ? 'attached' : 'beforeMount';
+		if (opt.style && opt.template) {
+			let { className, styleText } = scopedCss(opt.style);
+			opt.style = { class: className, text: styleText };
+			let insertIn = vueVersion === 1 ? 'init' : 'beforeCreate';
 
 			opt.template = scopedHtml(opt.template, className);
 
-			if (opt.attached || opt.beforeMount) {
-				let orgMethod = opt.attached || opt.beforeMount;
-				opt[insertIn] = insertStyle(className, styleText, orgMethod);
-			} else if (!opt.attached || !opt.beforeMount) {
-				opt[insertIn] = insertStyle(className, styleText);
+			if (opt.init || opt.beforeMount) {
+				let orgMethod = opt.init || opt.beforeMount;
+				opt[insertIn] = doStyle('insert', orgMethod);
+			} else if (!opt.init || !opt.beforeMount) {
+				opt[insertIn] = doStyle('insert');
 			}
 
 			if (opt.beforeDestroy) {
 				let orgMethod = opt.beforeDestroy;
-				opt.beforeDestroy = deleteStyle(className, orgMethod);
+				opt.beforeDestroy = doStyle('delete', orgMethod);
 			} else {
-				opt.beforeDestroy = deleteStyle(className);
+				opt.beforeDestroy = doStyle('delete');
+			}
+		}
+
+		if (vueVersion === 2 && opt.template) {
+			if (!opt.render || !opt.staticRenderFns) {
+				let renders = Vue['compile'](opt.template);
+				opt.render = opt.render || renders.render;
+				opt.staticRenderFns = opt.staticRenderFns || renders.staticRenderFns;
+				delete opt.template;
 			}
 		}
 
@@ -56,23 +64,21 @@ export function Component(options?: ComponentOptions) {
 			Vue.component(tagName, <vuejs.ComponentOption>(<any>opt));
 			return Vue.component(tagName);
 		} else {
-			return !!opt.el ? new Vue(<vuejs.ComponentOption>(<any>opt)) : Vue.extend(<vuejs.ComponentOption>(<any>opt));
+			return Vue.extend(<vuejs.ComponentOption>(<any>opt));
 		}
 	};
 }
 
-function insertStyle(id: string, style: string, orgMethod?: Function) {
+function doStyle(action: string, orgMethod?: Function) {
 	return function () {
-		insertCss(id, style);
-		if (orgMethod) {
-			orgMethod.call(this);
+		switch (action) {
+			case 'insert':
+				insertCss(this.$options.style.class, this.$options.style.text);
+				break;
+			case 'delete':
+				deleteCss(this.$options.style.class);
+				break;
 		}
-	};
-}
-
-function deleteStyle(id: string, orgMethod?: Function) {
-	return function () {
-		deleteCss(id);
 		if (orgMethod) {
 			orgMethod.call(this);
 		}

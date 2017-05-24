@@ -1,0 +1,1 @@
+export { On, Once } from './libs/EventsDecorator';

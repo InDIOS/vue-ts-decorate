@@ -1,0 +1,1 @@
+export { Getter, Action } from './libs/VuexDecorator';

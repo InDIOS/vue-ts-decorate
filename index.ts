@@ -1,19 +1,16 @@
-export { Prop } from './src/PropDecorator';
-export { Watch } from './src/WatchDecorator';
-export { Mixin } from './src/MixinsDecorator';
-export { On, Once } from './src/EventsDecorator';
-export { Filter } from './src/VueFilterDecorator';
-export { Getter, Action } from './src/VuexDecorator';
-export { Directive } from './src/VueDirectiveDecorator';
-export { Component } from './src/VueComponentDecorator';
+import Props from './prop';
+import Watchs from './watch';
+import Mixins from './mixin';
+import Filters from './filter';
+import Directives from './directive';
+import Components from './component';
 
-export abstract class VueDirective {
-	arg: string;
-	name: string;
-	vm: Object;
-	el: HTMLElement;
-	descriptor: any;
-	expression: string;
-	modifiers: { [key: string]: boolean };
-	abstract update(): void;
-}
+export { On, Once } from './events';
+export { Getter, Action } from './vuex';
+
+export const Prop = Props;
+export const Watch = Watchs;
+export const Mixin = Mixins;
+export const Filter = Filters;
+export const Directive = Directives;
+export const Component = Components;

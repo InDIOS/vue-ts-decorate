@@ -1,7 +1,7 @@
 import { parseProps, initOptions, cleanOptions, parseOptions } from '../utils/utilities';
-import Vue = require('vue');
+import Vue from 'vue';
 import { getAllProperties, assign } from '../utils/tools';
-import { ComponentOptions } from '../types/index';
+import { ComponentOptions } from 'vue-ts-decorate';
 
 export interface MixinOptions extends ComponentOptions {
 	global?: boolean;

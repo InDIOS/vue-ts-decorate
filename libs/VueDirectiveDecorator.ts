@@ -1,4 +1,4 @@
-import Vue = require('vue');
+import Vue from 'vue';
 import { parentMethods } from '../utils/tools';
 import { camelToKebabCase, vueVersion } from '../utils/utilities';
 
