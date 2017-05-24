@@ -1,5 +1,5 @@
-import Vue = require('vue');
-import { ComponentOptions } from '../types/index';
+import Vue from 'vue';
+import { ComponentOptions } from 'vue-ts-decorate';
 import { assign, getAllProperties } from './tools';
 
 export const routerHooks = [
@@ -175,16 +175,6 @@ export function parseProps(options: InternalOptions) {
 			key = camelToKebabCase(key);
 			if (directive[key]) directive = directive[key];
 			options.directives[key] = directive;
-		}
-	}
-
-	if (options.components) {
-		for (let key in options.components) {
-			let component = options.components[key];
-			delete options.components[key];
-			key = camelToKebabCase(key);
-			if (component[key]) component = component[key];
-			options.components[key] = component;
 		}
 	}
 

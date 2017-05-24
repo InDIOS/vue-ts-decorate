@@ -2,7 +2,7 @@ import { hash } from './tools';
 import { camelToKebabCase } from './utilities';
 import {
 	Options, Plugins, CSSGenerator, KeyFramesRule, StyleRuleObject, StyleRules
-} from '../types';
+} from 'vue-ts-decorate';
 
 let newline = '\n';
 let defaultOptions = {
@@ -21,23 +21,20 @@ function toCSS(rules: StyleRuleObject, options: Options, indent?: string[]) {
 			css += rules[selector][rawSel] + newline;
 			// handling normal styles
 		} else {
-			let entityStyle = indent[0] + selector.replace(/~~(.+)~~/, '').replace(/^%.*?%/, '') + ' {' + newline;
+			let entityStyle = `${indent[0]}${selector} {${newline}`;
 			let entity = '';
 			for (let prop in rules[selector]) {
 				let value = rules[selector][prop];
 				if (value === '') {
 					value = '""';
 				}
-				prop = prop.replace(/~~(.+)~~/, '').replace(/^%.*?%/, '');
-				if (options && options.keepCamelCase === true) {
-					entity += indent[1] + prop + ': ' + value + ';' + newline;
-				} else {
-					entity += indent[1] + camelToKebabCase(prop) + ': ' + value + ';' + newline;
-				}
+				prop = prop.replace(/[$]\d*/, '');
+				prop = options && options.keepCamelCase === true ? prop : camelToKebabCase(prop);
+				entity += `${indent[1]}${prop}: ${value};${newline}`;
 			}
 			if (entity !== '') {
 				entityStyle += entity;
-				entityStyle += indent[0] + '}' + newline;
+				entityStyle += `${indent[0]}}${newline}`;
 				css += entityStyle;
 			}
 		}
@@ -70,7 +67,7 @@ function combineSelectors(rules: StyleRuleObject, preventCombining: string[], ke
 				let propi = keepCamelCase ? map[i].prop : camelToKebabCase(map[i].prop);
 				let propj = keepCamelCase ? map[j].prop : camelToKebabCase(map[j].prop);
 				if (propi === propj && map[i].value === map[j].value) {
-					map[i].selector += ', ' + map[j].selector.replace(/~~(.+)~~/, '');
+					map[i].selector += ', ' + map[j].selector.replace(/[$]\d*/, '');
 					map[j].selector = false; // marking for removal
 				}
 			}
@@ -109,7 +106,7 @@ function processor(rules: { [stylesheet: string]: StyleRuleObject }, options?: O
 		if (stylesheet === 'mainstream') {
 			css += toCSS(r, options);
 		} else {
-			css += stylesheet + ' {' + newline + toCSS(r, options, ['  ', '    ']) + '}' + newline;
+			css += `${stylesheet} {${newline}${toCSS(r, options, ['  ', '    '])}}${newline}`;
 		}
 	}
 	// Minification

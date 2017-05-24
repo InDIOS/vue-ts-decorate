@@ -2,8 +2,8 @@ import { walk } from 'paul';
 import abs = require('./cssProcesor');
 import { parse, Element } from 'himalaya';
 import { toHTML } from 'himalaya/translate';
-import { StyleObject, StyleRuleObject } from '../types/index';
 import { camelToKebabCase } from './utilities';
+import { StyleObject, StyleRuleObject } from 'vue-ts-decorate';
 
 // An samll implementation of ES6 Set.
 class Set {
@@ -73,19 +73,32 @@ export function insertCss(id: string, css: string) {
 	if (!sty) {
 		isNew = true;
 		sty = document.createElement('style');
-		sty.setAttribute('type', 'text/css');
 		sty.id = id;
+		sty.setAttribute('refs', '1');
 	}
-	sty.textContent = css;
+	if (sty.textContent !== css) {
+		sty.textContent = css;
+	}
+
 	if (isNew) {
 		document.head.appendChild(sty);
+	} else {
+		let count = parseInt(sty.getAttribute('refs'), 10);
+		count++;
+		sty.setAttribute('refs', count.toString());
 	}
 }
 
 export function deleteCss(id: string) {
 	let sty = <HTMLStyleElement>document.head.querySelector('#' + id);
 	if (sty) {
-		document.head.removeChild(sty);
+		let count = parseInt(sty.getAttribute('refs'), 10);
+		count--;
+		if (count === 0) {
+			document.head.removeChild(sty);
+		} else {
+			sty.setAttribute('refs', count.toString());
+		}
 	}
 }
 
@@ -107,10 +120,10 @@ export function assign(target: any, ...sources: any[]): any {
 			for (let nextKey in source) {
 				if (source.hasOwnProperty(nextKey) && !isCircular(source[nextKey])) {
 					output[nextKey] = source[nextKey];
-					if (typeof source[nextKey] === 'object') {
-						output[nextKey] = assign({}, source[nextKey]);
-					} else if (Array.isArray(source[nextKey])) {
+					if (Array.isArray(source[nextKey])) {
 						output[nextKey] = source[nextKey].slice();
+					} else if (typeof source[nextKey] === 'object') {
+						output[nextKey] = assign({}, source[nextKey]);
 					}
 				} else {
 					output[nextKey] = output;
@@ -146,12 +159,20 @@ function isCircular(obj: Object) {
 export function scopedHtml(html: string, className: string) {
 	let tree = parse(html);
 	walk(tree, (node: Element, walk: Function) => {
-		if (node.tagName && ~node.tagName.indexOf('-')) return;
+		if (node.tagName && ~node.tagName.indexOf('-')) {
+			if (!node.attributes || !node.attributes.className) {
+				node.attributes = node.attributes || {};
+				node.attributes.className = [className];
+			} else {
+				node.attributes.className.unshift(className);
+			}
+			return;
+		}
 		if (!node.attributes || !node.attributes.className) {
 			node.attributes = node.attributes || {};
 			if (node.tagName === 'template') {
 				let attrs = Object.keys(node.attributes)
-					.filter(at => !!~camelToKebabCase(at).indexOf('v-')) || [];
+					.filter(at => !!~camelToKebabCase(at).indexOf('v-') || at === 'scope') || [];
 				if (attrs.length > 0) {
 					node.children[0].content = scopedHtml(node.children[0].content, className);
 				}
