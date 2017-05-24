@@ -1,10 +1,9 @@
 .vscode
 test
-src
-utils
-!libs/src
-!libs/utils
-index.ts
+utils/typings
+*.ts
+!*.d.ts
+*.map
 tsconfig.json
 tslint.json
 karma.conf.js
