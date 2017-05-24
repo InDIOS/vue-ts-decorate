@@ -5,12 +5,12 @@
 		"noImplicitAny": false,
 		"sourceMap": true,
 		"rootDir": ".",
-		"outDir": "./libs",
 		"removeComments": true,
 		"moduleResolution": "node",
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 		"noUnusedParameters": true,
+		"allowSyntheticDefaultImports": true,
 		"noUnusedLocals": true,
 		"typeRoots": [
 			"node_modules/@types"
