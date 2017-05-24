@@ -10,7 +10,8 @@ further are incompatible with Vue 2.x.x.
 
 ## Features
 
-* **@Component:** Create a Vue component in the three ways: `Vue.extend`, `Vue.component` and `Vue instance` (eg. `new Vue({ ... })`).
+* Compatibility with Vue version 1.x.x and 2.x.x.
+* **@Component:** Create a Vue component: `Vue.extend` and `Vue.component`.
   * **@Prop:** Create a component property.
   * **@On:** Create a component `on` event listener. **--> Work only with Vue 1.x.x**
   * **@Once:** Create a component `once` event listener. --> **Work only with Vue 1.x.x**
@@ -23,9 +24,10 @@ further are incompatible with Vue 2.x.x.
 
 ## Use with VueRouter and Vuex 2.x.x
 * VueRouter methods `beforeRouteEnter` and `beforeRouteLeave` are supported as class methods (without decoration).
-* With Vuex, for better usability and performance, use `map*` (* means `State`, `Getters`, `Actions` and `Mutations`) Vuex module methods in component options with object spread operator. 
+* With Vuex, for better usability and performance, use `map*` (* means `State`, `Getters`, `Actions` and `Mutations`) Vuex module methods in component options with the object spread operator. 
 
-# Note: Support for 2.x.x was tested and now is working, enjoy it. 
+# Configuration
+Follow the Vue configuration for Webpack and Browserify related in [Vue Doc](https://vuejs.org/v2/guide/installation.html)
 
 ## See all the examples below:
 
@@ -43,14 +45,16 @@ further are incompatible with Vue 2.x.x.
 ```javascript
 import * as Vue from 'vue';
 import { Component } from 'vue-ts-decorate';
+// or use
+// import Component from 'vue-ts-decorate/component';
 
-@Component({ el: '#app' })
+@Component()
 class MyComponent extends Vue {
   // No annotated properties are added to `data` property.
   someData: string = '';
 
   // methods named as instance hooks are added like hooks
-  ready() {
+  mounted() {
     this.someData = 'Hello!, MyComponent.';
   }
 
@@ -59,37 +63,41 @@ class MyComponent extends Vue {
     // ...
   }
 }
+
+new MyComponent().$mount('#app');
 ```
 The code above it is the same that:
 
 >NOTE: All Vue Router hooks are also supported as classes methods, except the `activate` hook because it has the same name as the Vue components hook in the version 1.x.x. In version 2.x.x only `beforeRouteEnter` and `beforeRouteLeave` are added as hooks.
 
 ```javascript
-new Vue({
-  el: '#app',
+let MyComponent = Vue.extend({
   data: {
     someData: ''
   },
-  ready() {
+  mounted() {
     this.someData = 'Hello!, MyComponent.';
   },
   methods: {
-    someMethod: function() {
+    someMethod() {
       // ...
     }
   }
 });
+
+new MyComponent().$mount('#app')
 ```
-The **@Component** decorator receives an object as an optional parameter with the same properties of a Vue component, to these properties is added the `componentTag` property which is a string to specify the name of the tag will have the component. If it is present, the component will be a global, otherwise will be local. If `el` property is specified the component will be a mounted component. See below
+The **@Component** decorator receives an object as an optional parameter with the same properties of a Vue component, to these properties is added the `componentTag` property which is a string to specify the name of the tag will have the component. If it is present, the component will be a global, otherwise will be local. `el` property are deprecate. To do a mounted component see below:
 
 ### Example
 
 ```javascript
 // Mounted Component
-@Component({ el: '#app' })
-class MountedComp {
+@Component()
+class MountedComp extends Vue {
   // ...
 }
+new MountedComp().$mount('#app');
 
 // Global Component
 @Component({ componentTag: 'globalComp' })
@@ -108,10 +116,10 @@ The example above it is the same that:
 
 ```javascript
 // Mounted Component
-new Vue({
-  el: '#app',
+let MountedComp = Vue.extend({
   // ...
 });
+new MountedComp().$mount('#app');
 
 // Global Component
 Vue.component('global-comp', {
@@ -129,18 +137,17 @@ Yes, in the `componentTag` you can use the camelCase style.
 Components can take other components too, in the options of **@Component**
 
 ```javascript
-// local Component
+// Child Component
 @Component()
-class LocalComp {
+class ChildComp {
   // ...
 }
 
-// Main Component
+// Parent Component
 @Component({ 
-  el: '#app',
-  components: { LocalComp }
+  components: { ChildComp }
 })
-class MainComp {
+class ParentComp {
   // ...
 }
 ```
@@ -204,12 +211,12 @@ class MyComponent extends Vue { // the class extends of Vue just to get intellit
     // ...
   }
 
-  @On('eventToEmit')
+  @On('eventToEmit') // if param is omited then, the function name is used as a event name
   someEvent() {
     // ...
   }
 
-  @Once('eventToEmitOnce')
+  @Once('eventToEmitOnce') // if param is omited then, the function name is used as a event name
   someEventOnce() {
     // ...
   }
@@ -221,7 +228,7 @@ It is equivalent to
 ```javascript
 Vue.extend({
   name: 'MyComponent',
-  data: function () {
+  data() {
     return {
       someVar: 'Hello!'
     };
@@ -233,7 +240,7 @@ Vue.extend({
       default: 'some default value'
     },
     someObjProp: {
-      default: function() {
+      default() {
         return { 
           some_default: 'value' 
         };
@@ -241,26 +248,26 @@ Vue.extend({
     },
     someObjProp: {
       type: Function,
-      default: function() {
+      default() {
         // ...
       }
     }
   },
   methods: {
-    someMethod: function() {
+    someMethod() {
       // ...
     }
   },
   watchs: {
-    someVar: function(newVal, oldVal) {
+    someVar(newVal, oldVal) {
       // ...
     }
   },
   events: {
-    eventToEmit: function() {
+    eventToEmit() {
       // ...
     },
-    eventToEmitOnce: function() {
+    eventToEmitOnce() {
       // ...
     }
   }
@@ -302,7 +309,7 @@ Vue.extend({
   name: 'MyComponent',
   vuex: {
     getters: {
-      someProp: function(state) {
+      someProp(state) {
         return state.app.counter;
       }
     },
@@ -580,7 +587,12 @@ Vue.extend({
 ```
 > Note on using new with component classes:
 
-See the [link](https://github.com/itsFrank/vue-typescript#note-on-using-new-with-component-classes)
+You can call a class with the `new` operator only if `componentTag` property is not set or present in the @Component decorator options. 
+
+# TO-DO
+- Add examples.
+- Make more tests.
+- Document how use style property for scoped style and how it works.
 
 # Contributions
 
