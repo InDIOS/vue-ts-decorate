@@ -2,7 +2,7 @@
   "name": "vue-ts-decorate",
   "version": "1.1.0",
   "description": "A set of TypeScript decorators for make the work with Vue.js easiest.",
-  "main": "./libs/index.js",
+  "main": "./index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/InDIOS/vue-ts-decorate.git"
