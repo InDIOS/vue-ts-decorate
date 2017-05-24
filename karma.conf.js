@@ -10,12 +10,12 @@ module.exports = function (karma) {
     // list of files/patterns to load in the browser
 		files: [
 			// our test files
-			'libs/test/**/*.js'
+			'test/**/*.js'
     ],
 
     // preprocess matching files before serving them to the browser
 		preprocessors: {
-			'libs/test/**/*.js': [ 'browserify' ]
+			'test/**/*.js': [ 'browserify' ]
     },
 
     // test results reporter to use
