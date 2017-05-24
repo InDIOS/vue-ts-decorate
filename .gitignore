@@ -3,4 +3,6 @@ npm-debug.log*
 
 # Dependency directories
 node_modules
-libs
+**/*.js
+**/*.map
+!kerma.conf.js
