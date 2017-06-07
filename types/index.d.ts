@@ -50,7 +50,17 @@ declare module 'vue-ts-decorate' {
 		paramWatchers?: Object;
 		acceptStatement?: boolean;
 	}
-	export abstract class VueDirective {
+	export interface BindOptions {
+		value: any;
+		arg: string;
+		name: string;
+		oldValue: any;
+		expression: string;
+		modifiers: {
+			[key: string]: boolean;
+		};
+	}
+	export abstract class Vue1Directive {
 		arg: string;
 		name: string;
 		vm: Object;
@@ -61,6 +71,9 @@ declare module 'vue-ts-decorate' {
 			[key: string]: boolean;
 		};
 		abstract update(): void;
+	}
+	export abstract class Vue2Directive {
+		abstract update(el?: HTMLElement, binding?: BindOptions, vnode?, oldVnode?): void;
 	}
 	export function Mixin(options?: MixinOptions): (target: any) => any;
 	export function Watch(name: string): (target: any, key: string) => void;
@@ -73,11 +86,9 @@ declare module 'vue-ts-decorate' {
 	export function Directive(options: DirectiveOptions | string): (target: any) => any;
 	export function Getter(getter: string | Function): (target: any, key: string) => void;
 	export function Watch(name: string, options: WatchOption): (target: any, key: string) => void;
-
 	export interface Plugins {
 		[name: string]: (value: any, prefix?: string | boolean) => StyleRules;
 	}
-
 	export interface Options {
 		minify?: boolean;
 		indent?: string[];
@@ -85,18 +96,15 @@ declare module 'vue-ts-decorate' {
 		combineSelectors?: boolean;
 		preventCombining?: string[];
 	}
-
 	export interface StyleResult {
 		className: string;
 		styleText: string;
 	}
-
 	export interface RawStyle {
 		____raw_: {
 			____raw_: string
 		}
 	}
-
 	export interface KeyFramesRule {
 		name: string;
 		frames: {
@@ -105,12 +113,10 @@ declare module 'vue-ts-decorate' {
 			[porp: string]: StyleRules;
 		}
 	}
-
 	type LineStyle = 'dashed' | 'dotted' | 'double' | 'groove' | 'hidden' | 'inset' | 'none' | 'outset' | 'ridge' | 'solid';
 	type GlobalValues = 'inherit' | 'initial' | 'unset';
 	type NamedColors = 'aliceblue' | 'antiquewhite' | 'aqua' | 'aquamarine' | 'azure' | 'beige' | 'bisque' | 'black' | 'blanchedalmond' | 'blue' | 'blueviolet' | 'brown' | 'burlywood' | 'cadetblue' | 'chartreuse' | 'chocolate' | 'coral' | 'cornflowerblue' | 'cornsilk' | 'crimson' | 'cyan' | 'darkblue' | 'darkcyan' | 'darkgoldenrod' | 'darkgray' | 'darkgreen' | 'darkgrey' | 'darkkhaki' | 'darkmagenta' | 'darkolivegreen' | 'darkorange' | 'darkorchid' | 'darkred' | 'darksalmon' | 'darkseagreen' | 'darkslateblue' | 'darkslategray' | 'darkslategrey' | 'darkturquoise' | 'darkviolet' | 'deeppink' | 'deepskyblue' | 'dimgray' | 'dimgrey' | 'dodgerblue' | 'firebrick' | 'floralwhite' | 'forestgreen' | 'fuchsia' | 'gainsboro' | 'ghostwhite' | 'gold' | 'goldenrod' | 'gray' | 'green' | 'greenyellow' | 'grey' | 'honeydew' | 'hotpink' | 'indianred' | 'indigo' | 'ivory' | 'khaki' | 'lavender' | 'lavenderblush' | 'lawngreen' | 'lemonchiffon' | 'lightblue' | 'lightcoral' | 'lightcyan' | 'lightgoldenrodyellow' | 'lightgray' | 'lightgreen' | 'lightgrey' | 'lightpink' | 'lightsalmon' | 'lightseagreen' | 'lightskyblue' | 'lightslategray' | 'lightslategrey' | 'lightsteelblue' | 'lightyellow' | 'lime' | 'limegreen' | 'linen' | 'magenta' | 'maroon' | 'mediumaquamarine' | 'mediumblue' | 'mediumorchid' | 'mediumpurple' | 'mediumseagreen' | 'mediumslateblue' | 'mediumspringgreen' | 'mediumturquoise' | 'mediumvioletred' | 'midnightblue' | 'mintcream' | 'mistyrose' | 'moccasin' | 'navajowhite' | 'navy' | 'oldlace' | 'olive' | 'olivedrab' | 'orange' | 'orangered' | 'orchid' | 'palegoldenrod' | 'palegreen' | 'paleturquoise' | 'palevioletred' | 'papayawhip' | 'peachpuff' | 'peru' | 'pink' | 'plum' | 'powderblue' | 'purple' | 'rebeccapurple' | 'red' | 'rosybrown' | 'royalblue' | 'saddlebrown' | 'salmon' | 'sandybrown' | 'seagreen' | 'seashell' | 'sienna' | 'silver' | 'skyblue' | 'slateblue' | 'slategray' | 'slategrey' | 'snow' | 'springgreen' | 'steelblue' | 'tan' | 'teal' | 'thistle' | 'tomato' | 'turquoise' | 'violet' | 'wheat' | 'white' | 'whitesmoke' | 'yellow' | 'yellowgreen';
 	type DefaultValue = {} | GlobalValues;
-
 	export interface StyleRules {
 		keyframes?: KeyFramesRule;
 		alignContent?: 'flex-start' | 'flex-end' | 'center' | 'space-between' | 'space-around' | 'stretch' | DefaultValue;
@@ -295,46 +301,13 @@ declare module 'vue-ts-decorate' {
 		zIndex?: 'auto' | number | GlobalValues;
 		[property: string]: string | number | StyleRules | KeyFramesRule;
 	}
-
 	interface StyleRuleObject {
 		[selector: string]: StyleRules
 	}
-
 	export interface CSSGenerator {
 		(rules: StyleRuleObject): StyleResult;
 		raw(rules: StyleRuleObject, options?: Options): RawStyle;
 		process(rules: StyleRuleObject, options?: Options): string;
 		prop(name: string, action: (value: any) => StyleRules): this;
 	}
-}
-
-declare module 'vue-ts-decorate/component' {
-	import { Component } from 'vue-ts-decorate';
-	export default Component;
-}
-declare module 'vue-ts-decorate/mixin' {
-	import { Mixin } from 'vue-ts-decorate';
-	export default Mixin;
-}
-declare module 'vue-ts-decorate/watch' {
-	import { Watch } from 'vue-ts-decorate';
-	export default Watch;
-}
-declare module 'vue-ts-decorate/events' {
-	export { On, Once } from 'vue-ts-decorate';
-}
-declare module 'vue-ts-decorate/vuex' {
-	export { Action, Getter } from 'vue-ts-decorate';
-}
-declare module 'vue-ts-decorate/filter' {
-	import { Filter } from 'vue-ts-decorate';
-	export default Filter;
-}
-declare module 'vue-ts-decorate/prop' {
-	import { Prop } from 'vue-ts-decorate';
-	export default Prop;
-}
-declare module 'vue-ts-decorate/directive' {
-	import { Directive } from 'vue-ts-decorate';
-	export default Directive;
 }
