@@ -246,7 +246,7 @@ Vue.extend({
         };
       }
     },
-    someObjProp: {
+    someFuncProp: {
       type: Function,
       default() {
         // ...
