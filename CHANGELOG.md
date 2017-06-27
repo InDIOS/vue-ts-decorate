@@ -1,5 +1,11 @@
+# 1.2.0
+- Changed directoriy structure.
+- Fixed decorators in separated file for allow importing one by one.
+- Added type definitions for separated files.
+- Added support for [vue-ts-decorate-loader](https://github.com/InDIOS/vue-ts-decorate-loader).
+
 # 1.1.0
-- Changed Absurd.JS for and more minimalist implementation for style preprocessing.
+- Changed Absurd.JS for a more minimalist implementation for style preprocessing.
 - Removed `el` property for inconsistency with hot module reload api package. Use the normal way of doing a root component or use the instance method $mount(...).
 - Moved decorators to a separated file for allow importing one by one.
 - Event name in `On` and `Once` decorators are now optional.
