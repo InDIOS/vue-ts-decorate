@@ -1,8 +1,8 @@
-import { walk } from 'paul';
+// import { walk } from 'paul';
 import abs = require('./cssProcesor');
-import { parse, Element } from 'himalaya';
-import { toHTML } from 'himalaya/translate';
-import { camelToKebabCase } from './utilities';
+// import { parse, Element } from 'himalaya';
+// import { toHTML } from 'himalaya/translate';
+// import { camelToKebabCase } from './utilities';
 import { StyleObject, StyleRuleObject } from 'vue-ts-decorate';
 
 // An samll implementation of ES6 Set.
@@ -122,6 +122,8 @@ export function assign(target: any, ...sources: any[]): any {
 					output[nextKey] = source[nextKey];
 					if (Array.isArray(source[nextKey])) {
 						output[nextKey] = source[nextKey].slice();
+					} else if (Object.prototype.toString.call(source[nextKey]) === '[object Date]') {
+						output[nextKey] = new Date(source[nextKey].valueOf());
 					} else if (typeof source[nextKey] === 'object') {
 						output[nextKey] = assign({}, source[nextKey]);
 					}
@@ -155,7 +157,7 @@ function isCircular(obj: Object) {
 	detect(obj);
 	return detected;
 }
-
+/*
 export function scopedHtml(html: string, className: string) {
 	let tree = parse(html);
 	walk(tree, (node: Element, walk: Function) => {
@@ -185,7 +187,7 @@ export function scopedHtml(html: string, className: string) {
 		walk(node.children || []);
 	});
 	return toHTML(tree);
-}
+}*/
 
 function pad(hash: string, len: number) {
 	while (hash.length < len) {
@@ -219,7 +221,7 @@ export function hash(value: string) {
 	return pad(preHash.toString(16), 8);
 }
 
-export function scopedCss(style: StyleObject | StyleRuleObject) {
+export function scopedCss(style: StyleObject | StyleRuleObject, hash: string) {
 	const css = abs({ minify: true });
 	let rules = style['rules'] ? <StyleRuleObject>style['rules'] : <StyleRuleObject>style;
 	if (style['props']) {
@@ -230,5 +232,5 @@ export function scopedCss(style: StyleObject | StyleRuleObject) {
 			}
 		}
 	}
-	return css(rules);
+	return css(rules, hash);
 }

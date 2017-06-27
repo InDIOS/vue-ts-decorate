@@ -122,8 +122,8 @@ function abstractStyle(options: Options) {
 
 	localPlugins['keyframes'] = keyframes;
 
-	let abtStyle: any = (objRules: Object) => {
-
+	let abtStyle: any = (objRules: Object, hashClass: string) => {
+		let scopeClass = hashClass ? `scope_${hashClass}` : HASHCLASS;
 		let ruleResgitered = [];
 		let allRules = { mainstream: {} };
 		options = { ...{ combineSelectors: true, preventCombining: ['@font-face'] }, ...(options || {}) };
@@ -267,7 +267,7 @@ function abstractStyle(options: Options) {
 			for (let i = 0; i < ruleResgitered.length; i++) {
 				stylesheet = ruleResgitered[i].stylesheet;
 				let props = ruleResgitered[i].props;
-				let selector = addScope(ruleResgitered[i].selector, `.${HASHCLASS}`);
+				let selector = addScope(ruleResgitered[i].selector, `.${scopeClass || HASHCLASS}`);
 				// overwrite already added value
 				allRules[stylesheet] = allRules[stylesheet] || {};
 				let rules = allRules[stylesheet];
@@ -298,10 +298,15 @@ function abstractStyle(options: Options) {
 			throw new Error('Error adding: ' + JSON.stringify({ rules: objRules, error: err.toString() }));
 		}
 
+		let className = '';		
 		let styleText = processor(allRules, options);
-		let toHash = minify(styleText.replace(new RegExp(`\\.${HASHCLASS}`, 'g'), ''));
-		let className = `scope_${hash(toHash)}`;
-		styleText = styleText.replace(new RegExp(HASHCLASS, 'g'), className);
+		if (scopeClass) {
+			className = scopeClass;
+		} else {
+			let toHash = minify(styleText.replace(new RegExp(`\\.${HASHCLASS}`, 'g'), ''));
+			className = `scope_${hash(toHash)}`;
+			styleText = styleText.replace(new RegExp(HASHCLASS, 'g'), className);
+		}		
 
 		return { className, styleText };
 	};

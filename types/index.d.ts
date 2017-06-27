@@ -305,7 +305,7 @@ declare module 'vue-ts-decorate' {
 		[selector: string]: StyleRules
 	}
 	export interface CSSGenerator {
-		(rules: StyleRuleObject): StyleResult;
+		(rules: StyleRuleObject, scope?: string): StyleResult;
 		raw(rules: StyleRuleObject, options?: Options): RawStyle;
 		process(rules: StyleRuleObject, options?: Options): string;
 		prop(name: string, action: (value: any) => StyleRules): this;

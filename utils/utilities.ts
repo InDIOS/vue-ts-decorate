@@ -17,7 +17,7 @@ export const vue1InstanceHooks = [
 ].concat(vueInstanceHooks);
 
 export const vue2InstanceHooks = [
-	'beforeRouteEnter', 'beforeRouteLeave', 'staticRenderFns',
+	'beforeRouteEnter', 'beforeRouteUpdate', 'beforeRouteLeave', 'staticRenderFns',
 	'activated', 'mounted', 'beforeCreate', 'beforeUpdate',
 	'updated', 'deactivated', 'beforeMount', 'render', 'renderError'
 ].concat(vueInstanceHooks);
