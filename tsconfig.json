@@ -5,16 +5,14 @@
 		"noImplicitAny": false,
 		"sourceMap": true,
 		"rootDir": ".",
+		"outDir": "./dist",
 		"removeComments": true,
 		"moduleResolution": "node",
 		"experimentalDecorators": true,
 		"emitDecoratorMetadata": true,
 		"noUnusedParameters": true,
 		"allowSyntheticDefaultImports": true,
-		"noUnusedLocals": true,
-		"typeRoots": [
-			"node_modules/@types"
-		]
+		"noUnusedLocals": true
 	},
 	"exclude": [
 		"node_modules"
