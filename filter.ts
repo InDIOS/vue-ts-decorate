@@ -13,12 +13,12 @@ export default function Filter(filterName: string, local?: boolean) {
 		parentMethods(target, newInstance);
 		let options: FilterOptions = {};
 		if (newInstance.filter) {
-			options.filter = newInstance.filter;
+			options.filter = newInstance.filter.bind(newInstance);
 		} else {
 			for (let key in newInstance) {
 				let isFunc = typeof newInstance[key] === 'function';
 				if ((key === 'read' || key === 'write') && isFunc) {
-					options[key] = newInstance[key];
+					options[key] = newInstance[key].bind(newInstance);
 				}
 			}
 		}
